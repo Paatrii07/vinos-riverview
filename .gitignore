@@ -1,0 +1,11 @@
+.DS_Store
+Thumbs.db
+
+*.log
+*.sql
+*.sqlite
+
+/node_modules
+/vendor
+
+
