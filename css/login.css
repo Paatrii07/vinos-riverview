@@ -1,0 +1,161 @@
+/* BUSCAR PRODUCTOS EN NAVEGADOR*/
+
+.btn-vino {
+    color: #722F37;              /* Color del texto y borde */
+    border-color: #722F37;       /* Color del borde */
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-vino:hover {
+    background-color: #722F37;   /* Al pasar el ratón, se rellena de vino */
+    color: white;                /* El texto se vuelve blanco */
+    border-color: #722F37;
+}
+
+/* Quitar el brillo azul de Bootstrap y ponerlo color Vino */
+.form-control:focus {
+    border-color: #722F37; /* Cambia el borde sólido a vino */
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25); /* El brillo suave */
+}
+
+/* --- PERSONALIZAR EL BOTÓN HAMBURGUESA --- */
+
+/* Cuando lo pulsas (Focus) o está abierto */
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    text-decoration: none;
+    outline: 0;
+    
+    /* Cambiamos el borde gris por borde VINO */
+    border-color: #722F37;
+    
+    /* El "brillo" que sale alrededor. */
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
+}
+
+/* --- ICONOS DE LA CABECERA (Login, Carrito y Buscar) --- */
+
+/* 1. Estado normal (transición suave) */
+.navbar .bi-search,
+.navbar .bi-person,
+.navbar .bi-cart {
+    transition: all 0.3s ease; /* Para que el cambio no sea brusco */
+}
+
+/* 2. Cuando pasas el ratón por encima */
+/* Nota: Apuntamos al enlace <a> para que el efecto salte aunque no toques el icono pixel a pixel */
+.navbar a:hover .bi-search,
+.navbar a:hover .bi-person,
+.navbar a:hover .bi-cart {
+    color: #722F37 !important; /* Cambia de negro a color Vino */
+    
+    /* Efecto de sombreado suave */
+    filter: drop-shadow(0px 3px 2px rgba(114, 47, 55, 0.4));
+    
+    /* Opcional: Un pequeño "zoom" para que destaque */
+    transform: scale(1.15); 
+}
+
+
+
+
+/* --- ESTILOS DEL MENÚ NAVEGACIÓN --- */
+
+
+/* 1. Enlaces del menú principal (Inicio, Tienda, Contacto...) */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: #722F37;           /* Color vino al pasar el ratón */
+}
+
+/* 2. Enlace de la página actual (la que tiene la clase "active") */
+.navbar-nav .nav-link.active {
+    color: #722F37 !important; /* Forzamos el color vino */
+    font-weight: bold;         /* Lo ponemos en negrita para destacar */
+}
+
+/* --- ESTILOS DEL DESPLEGABLE (DROPDOWN) --- */
+
+
+/* 3. Cuando pasas el ratón por las opciones del desplegable (Vinos, Quesos...) */
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #f8e8e8; /* Un fondo rosado muy suave */
+    color: #722F37;            /* Texto color vino */
+}
+
+/* 4. Cuando haces clic en una opción del desplegable */
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #722F37; /* Fondo color vino fuerte */
+    color: white;              /* Texto blanco */
+}
+
+/* Empujamos el contenido para que no se esconda bajo el menú fijo */
+body {
+    color: #444444;
+    padding-top: 90px; /* Ajusta este número según la altura de tu logo */
+}
+
+.text-vino {
+    color: #722F37 !important; /* Color vino forzado */
+    transition: color 0.3s ease;
+}
+
+.text-vino:hover {
+    color: #4a1e23 !important; /* Un tono más oscuro al pasar el ratón */
+    text-decoration: underline !important; /* Subrayado elegante al pasar el ratón */
+}
+
+
+
+
+
+
+
+
+/* --- FOOTER (PIE DE PÁGINA) --- */
+
+.footer-riverview {
+    background-color: #F9F7F2;      /* Blanco Crema / Hueso (Muy suave) */
+    border-top: 1px solid #e0e0e0;  /* Línea superior sutil (ya no gruesa) */
+    color: #5a5a5a;                 /* Gris medio para el texto (no negro) */
+    
+    font-weight: 300;               
+    font-size: 0.9rem;             
+    letter-spacing: 0.5px;          
+}
+/* Títulos (H5): Aún más elegantes */
+.footer-riverview h5 {
+    font-weight: 400 !important;   
+    letter-spacing: 1px;           
+    text-transform: uppercase;     
+    font-size: 0.95rem;
+    color: #722F37;                /* Tu color corporativo */
+    margin-bottom: 1.2rem;
+}
+
+/* Enlaces del footer */
+.footer-link {
+text-decoration: none;         
+    color: #5a5a5a;                /* Gris elegante */
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #722F37 !important;     /* Hover color vino */
+    background-color: transparent; /* Quitamos fondos raros */
+    padding-left: 5px;             
+}
+
+/* Iconos de redes sociales */
+.footer-riverview .bi {
+    color: #722F37;                /* Iconos color vino directamente */
+    transition: transform 0.3s ease;
+}
+
+.footer-riverview .bi:hover {
+    color: #722F37;                /* Iconos color vino directamente */
+    transition: transform 0.3s ease;
+}

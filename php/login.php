@@ -2,6 +2,12 @@
 // 1. Iniciar sesión en el navegador (Obligatorio para recordar al usuario)
 session_start();
 
+// Si el usuario ya está logueado, lo mandamos al inicio directamente
+if (isset($_SESSION['usuario_id'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
 $url = 'mysql:dbname=vinos_riverview;host=localhost';
 $user = 'root';
 $pass = "";
@@ -13,14 +19,37 @@ try {
     echo "Fallo la conexión: " . $e->getMessage();
 }
 
+$mensaje_error = "";
 
-$sql = "SELECT * FROM producto LIMIT :limite";
-$sentencia = $conexion->prepare($sql);
+// 2. Comprobar si han enviado el formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    $email = trim($_POST['email']);
+    $pass = $_POST['password'];
 
-$limite = 3; 
-$sentencia->bindParam(':limite', $limite, PDO::PARAM_INT);
+    // 3. Buscar al usuario por su email
+    // Usamos 'contrasena' y 'rol' tal cual están en tu tabla
+    $sql = "SELECT id_usuario, nombre, contrasena, rol FROM usuario WHERE email = :email LIMIT 1";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$sentencia->execute();
+    // 4. Verificar Contraseña
+    if ($usuario && password_verify($pass, $usuario['contrasena'])) {
+        // ¡CONTRASEÑA CORRECTA! Guardamos datos en la sesión
+        $_SESSION['usuario_id'] = $usuario['id_usuario'];
+        $_SESSION['nombre'] = $usuario['nombre'];
+        $_SESSION['rol'] = $usuario['rol']; // Para saber si es admin o cliente
+
+        // Redirigir al inicio (o al panel de admin si fuera necesario)
+        header("Location: ../index.php");
+        exit();
+    } else {
+        $mensaje_error = "El correo o la contraseña son incorrectos.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -28,14 +57,15 @@ $sentencia->execute();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./css/bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
+    <title>Iniciar Sesión - Vinos Riverview</title>
+    <link href="../css/bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="./css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-    <link href="./css/inicio.css" rel="stylesheet">
-    <title>Inicio - Vinos Riverview</title>
+    <script src="../css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <link href="../css/login.css" rel="stylesheet">
+    
 </head>
 <body>
-        <!-- Menú -->
+    
 <header>
     <nav class="navbar bg-white fixed-top">
         <div class="container-fluid position-relative">
@@ -44,8 +74,8 @@ $sentencia->execute();
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="index.php">
-                <img src="./img/logo.png" alt="Vinos Riverview" height="102">
+            <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="../index.php">
+                <img src="../img/logo.png" alt="Vinos Riverview" height="102">
             </a>
 
             <div class="d-flex gap-3 align-items-center">
@@ -58,40 +88,11 @@ $sentencia->execute();
                     <i class="bi bi-search" style="font-size: 1.5rem;"></i>
                 </a>
 
-<!-- condicional PHP:
-
-Si NO está logueado: Muestra el enlace al Login.
-
-Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir a sus pedidos, su perfil y botón de salir. -->
-
-                <?php if (!isset($_SESSION['usuario_id'])): ?>
-    
-                <a href="./php/login.php" class="text-dark">
-                <i class="bi bi-person" style="font-size: 1.5rem;"></i>
+                <a href="./login.php" class="text-dark">
+                    <i class="bi bi-person" style="font-size: 1.5rem;"></i>
                 </a>
 
-                <?php else: ?>
-    
-                    <div class="dropdown">
-                        <a href="#" class="text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-fill" style="font-size: 1.5rem; color: #722F37;"></i>
-                        </a>
-                        
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                            <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li>
-                            <li><hr class="dropdown-divider"></li>
-                            
-                            <li><a class="dropdown-item" href="./php/perfil.php">Mi Perfil</a></li>
-                            <li><a class="dropdown-item" href="#">Mis Pedidos</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            
-                            <li><a class="dropdown-item text-danger" href="./php/logout.php">Cerrar Sesión</a></li>
-                        </ul>
-                    </div>
-
-                <?php endif; ?>
-
-                <a href="carrito.php" class="text-dark">
+                <a href="./carrito.php" class="text-dark">
                     <i class="bi bi-cart" style="font-size: 1.5rem;"></i>
                 </a>
             </div>
@@ -105,7 +106,7 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.php">Inicio</a>
+                            <a class="nav-link active" aria-current="page" href="../index.php">Inicio</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tienda</a>
@@ -116,13 +117,13 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Experiencias / Catas</a>
+                            <a class="nav-link" href="./experiencias.php">Experiencias / Catas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Sobre Nosotros</a>
+                            <a class="nav-link" href="./nosotros.php">Sobre Nosotros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Contacto</a>
+                            <a class="nav-link" href="./contacto.php">Contacto</a>
                         </li>
                     </ul>
                 </div>
@@ -146,80 +147,45 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
 
 </header>
 
-<!-- Imagen introductoria -->
-
-<section class="inicio d-flex align-items-center">
-    <div class="container text-center">
+    <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <h1 class="display-1 fw-light mb-4">Tradición y Sabor</h1>
-                <p class="lead mb-5">Descubre nuestra selección exclusiva de vinos, quesos y embutidos artesanales. El placer de la buena mesa, directo a tu casa.</p>
-                <a href="tienda.php" class="btn btn-vino">VER CATÁLOGO</a>
-            </div>
-        </div>
-    </div>
-</section>
+            <div class="col-md-6">
+                <div class="card card-login p-4 p-md-5 bg-white">
+                    <h3 class="text-center text-vino mb-4 fw-light">Bienvenido</h3>
 
-<!-- Sección de productos destacados -->
+                    <?php if(!empty($mensaje_error)): ?>
+                        <div class="alert alert-danger text-center"><?php echo $mensaje_error; ?></div>
+                    <?php endif; ?>
 
-<section class="py-5 bg-white">
-    <div class="container">
-        
-        <div class="text-center mb-5">
-            <h2 class="display-6 fw-light text-vino">Nuestra Selección</h2>
-            <p class="text-muted small text-uppercase" style="letter-spacing: 2px;">Favoritos del Sommelier</p>
-        </div>
-
-        <div class="row">
-            
-            <?php 
-            // BUCLE PDO: Mientras haya productos en la sentencia...
-            while($fila = $sentencia->fetch(PDO::FETCH_ASSOC)) { 
-            ?>
-                <div class="col-md-4 mb-4">
-                    <div class="card product-card h-100 border-0">
-                        <div class="img-wrapper">
-                            <img src="./img/<?php echo $fila['imagen_url']; ?>" class="card-img-top" alt="<?php echo $fila['nombre']; ?>">
-                        </div>
+                    <form action="login.php" method="POST">
                         
-                        <div class="card-body text-center mt-3">
-                            <h5 class="card-title fw-normal"><?php echo $fila['nombre']; ?></h5>
-                            <p class="fw-bold text-vino fs-5"><?php echo $fila['precio_unidad']; ?>€</p>
-                            <a href="#" class="btn btn-outline-vino btn-sm px-4 rounded-0">Ver Detalle</a>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">Correo Electrónico</label>
+                            <input type="email" name="email" class="form-control" required>
                         </div>
-                    </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-muted small">Contraseña</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-vino text-uppercase" style="letter-spacing: 2px;">
+                                Entrar
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <span class="text-muted small">¿No tienes cuenta?</span>
+                            <a href="./registro.php" class="text-vino fw-bold text-decoration-none ms-1">Regístrate aquí</a>
+                        </div>
+                    </form>
+
                 </div>
-            <?php } ?>
             </div>
-    </div>
-</section>
-
-<!-- Sección de introducción a las experiencias -->
-
-<section class="py-5 section-promo" style="background-color: #F9F7F2;">
-    <div class="container">
-        <div class="row align-items-center">
-            
-            <div class="col-md-6 mb-4 mb-md-0">
-                <div class="promo-img-container">
-                    <img src="./img/experienciaInicio.jpeg" alt="Experiencia de Cata" class="img-fluid w-100 shadow-sm">
-                </div>
-            </div>
-
-            <div class="col-md-6 ps-md-5">
-                <h3 class="fw-light text-vino mb-3">Vive la Experiencia Riverview</h3>
-                <p class="text-muted mb-4 fw-light" style="font-size: 1.1rem;">
-                    No solo vendemos vino, creamos recuerdos. Ven a visitar nuestros viñedos al atardecer y descubre el proceso artesanal detrás de cada botella.
-                </p>
-                <a href="#" class="link-experiencia text-decoration-none text-uppercase small fw-bold text-vino">
-                    Reservar visita guiada <i class="bi bi-arrow-right ms-2"></i>
-                </a>
-            </div>
-
         </div>
     </div>
-</section>
-
+    
 <!-- Footer -->
 
 <footer class="footer-riverview pt-5 pb-4">
@@ -236,10 +202,10 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
 
             <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
                 <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Explorar</h5>
-                <p><a href="index.php" class="footer-link">Inicio</a></p>
-                <p><a href="tienda.php" class="footer-link">Tienda</a></p>
-                <p><a href="#" class="footer-link">Catas y Eventos</a></p>
-                <p><a href="#" class="footer-link">Sobre Nosotros</a></p>
+                <p><a href="../index.php" class="footer-link">Inicio</a></p>
+                <p><a href="./tienda.php" class="footer-link">Tienda</a></p>
+                <p><a href="./experiencias.php" class="footer-link">Catas y Eventos</a></p>
+                <p><a href="./nosotros.php" class="footer-link">Sobre Nosotros</a></p>
             </div>
 
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
@@ -280,4 +246,3 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
 </footer>
     
 </body>
-</html>
