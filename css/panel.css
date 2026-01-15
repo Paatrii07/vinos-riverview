@@ -1,0 +1,111 @@
+/* css/admin.css - ESTILO MINIMALISTA FINAL */
+
+/* 1. AJUSTES GENERALES DE ESTRUCTURA */
+html, body {
+    height: 100%; /* Necesario para que el footer se pegue abajo */
+}
+
+body {
+    background-color: #F9F7F2; /* Tu crema suave de fondo */
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* --- 2. CABECERA SUPERIOR --- */
+.admin-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #722F37; /* Línea fina color vino */
+    padding: 15px 30px;
+    height: 70px;
+}
+
+.brand-text {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: #722F37;
+    text-transform: uppercase;
+}
+
+.logout-link {
+    color: #722F37;
+    text-decoration: none;
+    font-size: 0.9rem;
+    border: 1px solid #722F37;
+    padding: 5px 15px;
+    transition: all 0.3s;
+}
+
+.logout-link:hover {
+    background-color: #722F37;
+    color: white;
+}
+
+/* --- 3. MENÚ LATERAL IZQUIERDO --- */
+.sidebar-menu {
+    border-right: 1px solid rgba(114, 47, 55, 0.1);
+    background-color: transparent;
+    padding-top: 2rem;
+}
+
+.sidebar-menu .nav-link {
+    color: #555;
+    padding: 15px 20px;
+    font-weight: 400;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-menu .nav-link:hover {
+    color: #722F37;
+    background-color: rgba(114, 47, 55, 0.05);
+}
+
+.sidebar-menu .nav-link.active {
+    color: #722F37;
+    font-weight: bold;
+    border-left: 3px solid #722F37;
+    background-color: white;
+}
+
+/* --- 4. CONTENIDO DERECHA --- */
+.content-area {
+    padding: 2rem 3rem;
+}
+
+.card-counter {
+    border: 1px solid rgba(114, 47, 55, 0.1);
+    background-color: white;
+    border-radius: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+/* Botones de accesos rápidos */
+.btn-minimal {
+    border: 1px dashed #722F37;
+    background-color: transparent;
+    color: #722F37;
+    transition: all 0.3s;
+}
+
+.btn-minimal:hover {
+    background-color: #722F37;
+    color: white;
+    border-style: solid;
+}
+
+/* --- 5. FOOTER (NUEVO) --- */
+.admin-footer {
+    margin-top: auto; /* Empuja el footer hacia abajo */
+    padding-top: 2rem;
+    text-align: center;
+}
+
+.admin-footer hr {
+    border-color: #722F37;
+    opacity: 0.1;
+    margin-bottom: 1.5rem;
+}
+
+.admin-footer p {
+    color: #6c757d; /* Gris apagado (text-muted) */
+    font-size: 0.85rem;
+}

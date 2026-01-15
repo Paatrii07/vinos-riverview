@@ -1,7 +1,8 @@
 <?php
-// 1. Iniciar sesión en el navegador (Obligatorio para recordar al usuario)
+// 1. Iniciar sesión (Obligatorio para que funcionen los menús inteligentes)
 session_start();
 
+// 2. Conexión a Base de Datos (Manual, como la tienes configurada)
 $url = 'mysql:dbname=vinos_riverview;host=localhost';
 $user = 'root';
 $pass = "";
@@ -13,7 +14,7 @@ try {
     echo "Fallo la conexión: " . $e->getMessage();
 }
 
-
+// 3. Consulta de productos para los articulos destacados
 $sql = "SELECT * FROM producto LIMIT :limite";
 $sentencia = $conexion->prepare($sql);
 
@@ -35,8 +36,7 @@ $sentencia->execute();
     <title>Inicio - Vinos Riverview</title>
 </head>
 <body>
-        <!-- Menú -->
-<header>
+        <header>
     <nav class="navbar bg-white fixed-top">
         <div class="container-fluid position-relative">
             
@@ -58,20 +58,14 @@ $sentencia->execute();
                     <i class="bi bi-search" style="font-size: 1.5rem;"></i>
                 </a>
 
-<!-- condicional PHP:
-
-Si NO está logueado: Muestra el enlace al Login.
-
-Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir a sus pedidos, su perfil y botón de salir. -->
-
                 <?php if (!isset($_SESSION['usuario_id'])): ?>
-    
-                <a href="./php/login.php" class="text-dark">
-                <i class="bi bi-person" style="font-size: 1.5rem;"></i>
-                </a>
+                    
+                    <a href="./php/login.php" class="text-dark">
+                        <i class="bi bi-person" style="font-size: 1.5rem;"></i>
+                    </a>
 
                 <?php else: ?>
-    
+                    
                     <div class="dropdown">
                         <a href="#" class="text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-fill" style="font-size: 1.5rem; color: #722F37;"></i>
@@ -81,8 +75,15 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
                             <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li>
                             <li><hr class="dropdown-divider"></li>
                             
+                            <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?>
+                                <li>
+                                    <a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">
+                                        <i class="bi bi-speedometer2 me-2"></i> Panel de Control
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                            <?php endif; ?>
                             <li><a class="dropdown-item" href="./php/perfil.php">Mi Perfil</a></li>
-                            <li><a class="dropdown-item" href="#">Mis Pedidos</a></li>
                             <li><hr class="dropdown-divider"></li>
                             
                             <li><a class="dropdown-item text-danger" href="./php/logout.php">Cerrar Sesión</a></li>
@@ -90,7 +91,6 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
                     </div>
 
                 <?php endif; ?>
-
                 <a href="carrito.php" class="text-dark">
                     <i class="bi bi-cart" style="font-size: 1.5rem;"></i>
                 </a>
@@ -146,8 +146,6 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
 
 </header>
 
-<!-- Imagen introductoria -->
-
 <section class="inicio d-flex align-items-center">
     <div class="container text-center">
         <div class="row justify-content-center">
@@ -159,8 +157,6 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
         </div>
     </div>
 </section>
-
-<!-- Sección de productos destacados -->
 
 <section class="py-5 bg-white">
     <div class="container">
@@ -194,8 +190,6 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
     </div>
 </section>
 
-<!-- Sección de introducción a las experiencias -->
-
 <section class="py-5 section-promo" style="background-color: #F9F7F2;">
     <div class="container">
         <div class="row align-items-center">
@@ -219,8 +213,6 @@ Si SÍ está logueado: Muestra un menú desplegable con su nombre, opcion de ir 
         </div>
     </div>
 </section>
-
-<!-- Footer -->
 
 <footer class="footer-riverview pt-5 pb-4">
     <div class="container text-center text-md-start">

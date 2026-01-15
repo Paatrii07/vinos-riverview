@@ -1,0 +1,103 @@
+/* css/perfil.css */
+
+/* --- 1. AJUSTES GENERALES Y NAVBAR --- */
+body {
+    background-color: #F9F7F2; /* Fondo crema suave */
+}
+
+/* Ajuste para que el logo grande no quede pegado */
+.navbar { 
+    min-height: 120px; 
+}
+
+/* Empujamos el contenido para que no lo tape la barra fija */
+.perfil-container {
+    margin-top: 150px;
+}
+
+/* --- 2. PESTAÑAS (TABS) --- */
+.nav-tabs .nav-link { 
+    color: #555; 
+}
+
+.nav-tabs .nav-link.active { 
+    color: #722F37; /* Color vino al estar activo */
+    font-weight: bold; 
+    border-color: #dee2e6 #dee2e6 #fff; 
+}
+
+/* Hover en las filas de la tabla de pedidos */
+.table-hover tbody tr:hover {
+    background-color: rgba(114, 47, 55, 0.05);
+}
+
+/* --- 3. BOTONES PERSONALIZADOS --- */
+/* Estilo para el botón de salir color vino */
+.btn-outline-vino-custom {
+    color: #722F37;
+    border-color: #722F37;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-vino-custom:hover {
+    background-color: #722F37;
+    color: white;
+}
+
+
+
+/* BOTÓN BORDE VINO (Fondo blanco -> Relleno al pasar el ratón) */
+.btn-outline-vino {
+    background-color: white;     /* Fondo inicial blanco */
+    color: #722F37;              /* Texto color vino */
+    border: 1px solid #722F37;   /* Borde color vino */
+    transition: all 0.3s ease;   /* Suavizado */
+}
+
+.btn-outline-vino:hover {
+    background-color: #722F37;   /* Al pasar ratón: Fondo vino */
+    color: white;                /* Al pasar ratón: Texto blanco */
+}
+
+/* --- 4. FOOTER (ESTILO RIVERVIEW) --- */
+.footer-riverview {
+    background-color: #F9F7F2;      /* Blanco Crema / Hueso */
+    border-top: 1px solid #e0e0e0;  /* Línea superior sutil */
+    color: #5a5a5a;                 /* Gris medio para el texto */
+    font-weight: 300;               
+    font-size: 0.9rem;             
+    letter-spacing: 0.5px;          
+}
+
+/* Títulos del footer */
+.footer-riverview h5 {
+    font-weight: 400 !important;   
+    letter-spacing: 1px;           
+    text-transform: uppercase;     
+    font-size: 0.95rem;
+    color: #722F37;                /* Color corporativo */
+    margin-bottom: 1.2rem;
+}
+
+/* Enlaces del footer */
+.footer-link {
+    text-decoration: none;         
+    color: #5a5a5a;                /* Gris elegante */
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #722F37 !important;     /* Hover color vino */
+    background-color: transparent; 
+    padding-left: 5px;             /* Pequeño movimiento a la derecha */
+}
+
+/* Iconos de redes sociales */
+.footer-riverview .bi {
+    color: #722F37;                /* Iconos color vino */
+    transition: transform 0.3s ease;
+}
+
+.footer-riverview .bi:hover {
+    transform: translateY(-3px);   /* Efecto de elevación */
+}

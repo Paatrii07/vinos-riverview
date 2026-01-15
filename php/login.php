@@ -2,11 +2,18 @@
 // 1. Iniciar sesión en el navegador (Obligatorio para recordar al usuario)
 session_start();
 
-// Si el usuario ya está logueado, lo mandamos al inicio directamente
+// Si el usuario ya está logueado, lo redirigimos según su rol
+
 if (isset($_SESSION['usuario_id'])) {
-    header("Location: ../index.php");
+    if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador') {
+        header("Location: ../admin/panel.php");
+    } else {
+        header("Location: ../index.php");
+    }
     exit();
 }
+
+// Conexion con la base de datos
 
 $url = 'mysql:dbname=vinos_riverview;host=localhost';
 $user = 'root';
@@ -44,8 +51,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['rol'] = $usuario['rol']; // Para saber si es admin o cliente
 
         // Redirigir al inicio (o al panel de admin si fuera necesario)
-        header("Location: ../index.php");
+        if ($_SESSION['rol'] == 'administrador') {
+            header("Location: ../admin/panel.php");
+        } else {
+            // Si es cliente normal, al inicio
+            header("Location: ../index.php");
+        }
         exit();
+        
     } else {
         $mensaje_error = "El correo o la contraseña son incorrectos.";
     }
@@ -150,7 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card card-login p-4 p-md-5 bg-white">
+                <div class="card card-login p-4 p-md-5 mb-3 bg-white">
                     <h3 class="text-center text-vino mb-4 fw-light">Bienvenido</h3>
 
                     <?php if(!empty($mensaje_error)): ?>
