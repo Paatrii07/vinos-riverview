@@ -19,6 +19,10 @@
     box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25); /* El brillo suave */
 }
 
+nav{
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+}
+
 /* --- PERSONALIZAR EL BOTÓN HAMBURGUESA --- */
 
 /* Cuando lo pulsas (Focus) o está abierto */

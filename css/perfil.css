@@ -1,21 +1,90 @@
-/* css/perfil.css */
+/* --- PERSONALIZAR EL BOTÓN HAMBURGUESA --- */
 
-/* --- 1. AJUSTES GENERALES Y NAVBAR --- */
-body {
-    background-color: #F9F7F2; /* Fondo crema suave */
+nav{
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
 }
 
-/* Ajuste para que el logo grande no quede pegado */
-.navbar { 
-    min-height: 120px; 
+/* Cuando lo pulsas (Focus) o está abierto */
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    text-decoration: none;
+    outline: 0;
+    
+    /* Cambiamos el borde gris por borde VINO */
+    border-color: #722F37;
+    
+    /* El "brillo" que sale alrededor. */
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
 }
+
+/* Enlaces del menú principal (Inicio, Tienda, Contacto...) */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: #722F37;           /* Color vino al pasar el ratón */
+}
+
+/* Enlace de la página actual (la que tiene la clase "active") */
+.navbar-nav .nav-link.active {
+    color: #722F37 !important; /* Forzamos el color vino */
+    font-weight: bold;         /* Lo ponemos en negrita para destacar */
+}
+
+/* Cuando pasas el ratón por las opciones del desplegable (Vinos, Quesos...) */
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #f8e8e8; /* Un fondo rosado muy suave */
+    color: #722F37;            /* Texto color vino */
+}
+
+/* Cuando haces clic en una opción del desplegable */
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #722F37; /* Fondo color vino fuerte */
+    color: white;              /* Texto blanco */
+}
+
+
+/* Color Vino Corporativo */
+        .text-vino { color: #722F37 !important; }
+        .bg-vino { background-color: #722F37 !important; }
+        .btn-vino { background-color: #722F37; color: white; border: 1px solid #722F37; }
+        .btn-vino:hover { background-color: #5a232b; color: white; }
+        
+        /* Modal elegante */
+        .modal-header-vino {
+            border-bottom: 1px solid #eee;
+            background-color: #fff; /* Fondo blanco más limpio */
+        }
+
+        
+        .modal-title-vino {
+            color: #722F37;
+            font-weight: 300; /* Letra fina elegante */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+/*  FORMULARIO*/
+
+/* Sobrescribir el focus azul de Bootstrap por Vino */
+.form-control:focus {
+    border-color: #722F37; /* Borde sólido color vino */
+    /* El brillo es el color vino (RGB: 114, 47, 55) con 25% de transparencia */
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25); 
+} 
+ 
+
+
+
+
 
 /* Empujamos el contenido para que no lo tape la barra fija */
 .perfil-container {
-    margin-top: 150px;
+    margin-top: 90px;
+    padding-bottom: 2rem;
 }
 
-/* --- 2. PESTAÑAS (TABS) --- */
+/* --- Color de los enlaces mis datos, mis pedidos y mis experiencias--- */
 .nav-tabs .nav-link { 
     color: #555; 
 }
@@ -26,27 +95,8 @@ body {
     border-color: #dee2e6 #dee2e6 #fff; 
 }
 
-/* Hover en las filas de la tabla de pedidos */
-.table-hover tbody tr:hover {
-    background-color: rgba(114, 47, 55, 0.05);
-}
 
-/* --- 3. BOTONES PERSONALIZADOS --- */
-/* Estilo para el botón de salir color vino */
-.btn-outline-vino-custom {
-    color: #722F37;
-    border-color: #722F37;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-vino-custom:hover {
-    background-color: #722F37;
-    color: white;
-}
-
-
-
-/* BOTÓN BORDE VINO (Fondo blanco -> Relleno al pasar el ratón) */
+/* Boton guardar cambios (Fondo blanco -> Relleno al pasar el ratón) */
 .btn-outline-vino {
     background-color: white;     /* Fondo inicial blanco */
     color: #722F37;              /* Texto color vino */
@@ -59,9 +109,12 @@ body {
     color: white;                /* Al pasar ratón: Texto blanco */
 }
 
+
+
+
 /* --- 4. FOOTER (ESTILO RIVERVIEW) --- */
 .footer-riverview {
-    background-color: #F9F7F2;      /* Blanco Crema / Hueso */
+    background-color: #f2f2f1;      
     border-top: 1px solid #e0e0e0;  /* Línea superior sutil */
     color: #5a5a5a;                 /* Gris medio para el texto */
     font-weight: 300;               

@@ -1,13 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <img src="./img/rueda.jpg">
-    <a href="./php/registro.php"></a>
-    
-</body>
-</html>
+ <header>
+    <nav class="navbar bg-white fixed-top">
+        <div class="container-fluid position-relative">
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="index.php">
+                <img src="./img/logo.png" alt="Vinos Riverview" height="102">
+            </a>
+
+            <div class="d-flex gap-3 align-items-center">
+                
+                <a href="#" class="text-dark" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#searchBar" 
+                    aria-expanded="false" 
+                    onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
+                    <i class="bi bi-search" style="font-size: 1.5rem;"></i>
+                </a>
+
+                <?php if (!isset($_SESSION['usuario_id'])): ?>
+                    
+                    <a href="./php/login.php" class="text-dark">
+                        <i class="bi bi-person" style="font-size: 1.5rem;"></i>
+                    </a>
+
+                <?php else: ?>
+                    
+                    <div class="dropdown">
+                        <a href="#" class="text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-fill" style="font-size: 1.5rem; color: #722F37;"></i>
+                        </a>
+                        
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                            <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li>
+                            <li><hr class="dropdown-divider"></li>
+                            
+                            <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?>
+                                <li>
+                                    <a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">
+                                        <i class="bi bi-speedometer2 me-2"></i> Panel de Control
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                            <?php endif; ?>
+                            <li><a class="dropdown-item" href="./php/perfil.php">Mi Perfil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            
+                            <li><a class="dropdown-item text-danger" href="./php/logout.php">Cerrar Sesión</a></li>
+                        </ul>
+                    </div>
+
+                <?php endif; ?>
+                <a href="carrito.php" class="text-dark">
+                    <i class="bi bi-cart" style="font-size: 1.5rem;"></i>
+                </a>
+            </div>
+        
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.php">Inicio</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tienda</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Vinos</a></li>
+                                <li><a class="dropdown-item" href="#">Quesos</a></li>
+                                <li><a class="dropdown-item" href="#">Embutidos</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Experiencias / Catas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Sobre Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="collapse bg-white shadow-sm buscador-superior" id="searchBar">
+        <div class="container py-3">
+            <form action="tienda.php" method="GET" class="d-flex justify-content-center">
+                <div class="input-group w-50">
+                    <span class="input-group-text bg-transparent border-end-0">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" name="q" class="form-control border-start-0 ps-0" placeholder="Buscar vino, queso..." style="box-shadow: none;">
+                    <button class="btn btn-vino" type="submit">BUSCAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</header>

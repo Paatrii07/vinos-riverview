@@ -75,6 +75,10 @@
     font-weight: bold;         /* Lo ponemos en negrita para destacar */
 }
 
+nav{
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+}
+
 /* --- ESTILOS DEL DESPLEGABLE (DROPDOWN) --- */
 
 
@@ -97,6 +101,7 @@
 body {
     color: #444444;
     padding-top: 90px; /* Ajusta este número según la altura de tu logo */
+    
 }
 
 /* --- UTILIDADES DE COLOR --- */
@@ -110,6 +115,14 @@ body {
     color: #4a1e23 !important; /* Un tono más oscuro al pasar el ratón */
     text-decoration: underline !important; /* Subrayado elegante al pasar el ratón */
 }
+
+/* Tooltips */
+.custom-tooltip {
+    --bs-tooltip-bg: #722F37 !important;  
+    --bs-tooltip-color: #ffffff;
+    --bs-tooltip-opacity: 1;
+}
+
 
 
 
@@ -133,19 +146,19 @@ body {
     letter-spacing: 1px;           
     text-transform: uppercase;     
     font-size: 0.95rem;
-    color: #722F37;                /* Tu color corporativo */
+    color: #722F37;                
     margin-bottom: 1.2rem;
 }
 
 /* Enlaces del footer */
 .footer-link {
 text-decoration: none;         
-    color: #5a5a5a;                /* Gris elegante */
+    color: #5a5a5a;                
     transition: all 0.3s ease;
 }
 
 .footer-link:hover {
-    color: #722F37 !important;     /* Hover color vino */
+    color: #722F37 !important;     
     background-color: transparent; /* Quitamos fondos raros */
     padding-left: 5px;             
 }

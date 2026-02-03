@@ -1,27 +1,39 @@
 <?php
-// 1. Iniciar sesión
+// 1. INICIAR SESIÓN Y CONEXIÓN
 session_start();
+$url_db = 'mysql:dbname=vinos_riverview;host=localhost';
+$user_db = 'root';
+$pass_db = "";
 
-// 2. Conexión a Base de Datos
-$url = 'mysql:dbname=vinos_riverview;host=localhost';
-$user = 'root';
-$pass = "";
+// Variable para controlar si encontramos el producto
+$producto = null;
 
 try {
-    $conexion = new PDO($url, $user, $pass);
+    $conexion = new PDO($url_db, $user_db, $pass_db);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // 2. VALIDAR ID
+    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+        $id = $_GET['id'];
+        
+        // Consultamos el producto específico
+        $sql = "SELECT * FROM producto WHERE id_producto = :id";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $producto = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Si no hay ID o no existe el producto, redirigimos a la tienda
+    if (!$producto) {
+        header('Location: tienda.php');
+        exit;
+    }
+
 } catch(PDOException $e) {
-    echo "Fallo la conexión: " . $e->getMessage();
+    die("Error: " . $e->getMessage());
 }
-
-// 3. Consulta de productos para los destacados (Limitado a 3)
-$sql = "SELECT * FROM producto LIMIT :limite";
-$sentencia = $conexion->prepare($sql);
-
-$limite = 3; 
-$sentencia->bindParam(':limite', $limite, PDO::PARAM_INT);
-
-$sentencia->execute();
 ?>
 
 <!DOCTYPE html>
@@ -29,13 +41,13 @@ $sentencia->execute();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio - Vinos Riverview</title>
+    <title><?php echo $producto['nombre']; ?> - Vinos Riverview</title>
     
-    <link href="./css/bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
+    <link href="../css/bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="./css/inicio.css" rel="stylesheet">
+    <script src="../css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
     
-    
+    <link href="../css/producto_detalle.css" rel="stylesheet">
 </head>
 <body>
 
@@ -48,7 +60,7 @@ $sentencia->execute();
                 </button>
 
                 <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="index.php">
-                    <img src="./img/logo.png" alt="Vinos Riverview" height="102">
+                    <img src="../img/logo.png" alt="Vinos Riverview" height="102">
                 </a>
 
                 <div class="d-flex gap-3 align-items-center">
@@ -61,26 +73,26 @@ $sentencia->execute();
                         <i class="bi bi-search icon-nav"></i>
                     </a>
 
-                    <?php if (!isset($_SESSION['usuario_id'])): ?> <!-- Si NO hay usuario logueado, muestras el icono de la persona vacía (para ir al Login). -->
+                    <?php if (!isset($_SESSION['usuario_id'])): ?>
                         <a href="./php/login.php" class="text-dark">
                             <i class="bi bi-person icon-nav"></i>
                         </a>
-                    <?php else: ?> <!-- (Si SÍ hay usuario): Muestras un menú desplegable con su nombre ($_SESSION['nombre']), enlace a "Mi Perfil" y "Cerrar Sesión". -->
+                    <?php else: ?>
                         <div class="dropdown">
                             <a href="#" class="text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-fill icon-nav-user"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li> <!-- recuperamos el nombre del usuario guardado en la sesión cuando hizo login. el caracter htmlspecialchars evita, ataques. Convierte caracteres especiales en entidades HTML -->
+                                <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?> <!-- ¿Existe la variable rol Y ADEMÁS es igual a 'administrador'?". Si -> te lleva al panel de administrador. No-> te lleva al menu de cliente. -->
+                                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?>
                                     <li>
                                         <a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">
                                             <i class="bi bi-speedometer2 me-2"></i> Panel de Control
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
-                                <?php endif; ?> <!-- Abre el menu de usuario / cliente. -->
+                                <?php endif; ?>
                                 <li><a class="dropdown-item" href="./php/perfil.php">Mi Perfil</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="./php/logout.php">Cerrar Sesión</a></li>
@@ -159,154 +171,75 @@ $sentencia->execute();
 
     </header>
 
-    <main>
-        <?php if (isset($_GET['mensaje'])): ?>
-            <div class="container mt-4">
-                
-                <?php if ($_GET['mensaje'] == 'cuenta_eliminada'): ?>
-                    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        <strong>¡Cuenta eliminada!</strong> Tu cuenta y todos tus datos han sido borrados correctamente.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                    </div>
+    <main class="container mb-5" style="margin-top: 140px;">
+        
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none text-muted">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="tienda.php" class="text-decoration-none text-muted">Tienda</a></li>
+                <li class="breadcrumb-item active text-vino" aria-current="page"><?php echo $producto['nombre']; ?></li>
+            </ol>
+        </nav>
 
-                <?php elseif ($_GET['mensaje'] == 'error_eliminar'): ?>
-                    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-                        <strong>Error:</strong> No se pudo eliminar la cuenta. Por favor, contacta con soporte.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                    </div>
-                <?php endif; ?>
-
+        <article class="row align-items-center g-5">
+            
+            <div class="col-md-6">
+                <figure class="text-center p-5 bg-light rounded-3 shadow-sm m-0">
+                    <img src="../img/<?php echo $producto['imagen_url']; ?>" 
+                        class="img-fluid" 
+                        alt="<?php echo $producto['nombre']; ?>" 
+                        style="max-height: 500px; object-fit: contain;">
+                </figure>
             </div>
-        <?php endif; ?>
 
-        <section class="inicio d-flex align-items-center">
-            <div class="container text-center">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <h1 class="display-1 fw-light mb-4">Tradición y Sabor</h1>
-                        <p class="lead mb-5">Descubre nuestra selección exclusiva de vinos, quesos y embutidos artesanales. El placer de la buena mesa, directo a tu casa.</p>
-                        <a href="./php/tienda.php" class="btn btn-vino">VER CATÁLOGO</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-5 bg-white">
-            <div class="container">
-                
-                <header class="text-center mb-5">
-                    <h2 class="display-6 fw-light text-vino">Nuestra Selección</h2>
-                    <p class="text-muted small text-uppercase fw-bold-spacing">Favoritos del Sommelier</p>
+            <section class="col-md-6">
+                <header class="mb-4">
+                    <h1 class="display-4 fw-light text-vino"><?php echo $producto['nombre']; ?></h1>
+                    <p class="text-muted text-uppercase small ls-2">Ref: <?php echo $producto['id_producto']; ?> | Categoría ID: <?php echo $producto['id_categoria']; ?></p>
                 </header>
 
-                <div class="row">
-                    <?php while($fila = $sentencia->fetch(PDO::FETCH_ASSOC)) { 
-                        $modalID = "modalProducto" . $fila['id_producto'];
-                    ?>
-                        <div class="col-md-4 mb-4">
-                            
-                            <article class="card product-card h-100 border-0">
-                                <figure class="img-wrapper m-0"> <img src="./img/<?php echo $fila['imagen_url']; ?>" class="card-img-top" alt="Botella de <?php echo $fila['nombre']; ?>">
-                                </figure>
-                                
-                                <div class="card-body text-center mt-3">
-                                    <header> <h3 class="card-title fw-normal h5"><?php echo $fila['nombre']; ?></h3>
-                                        <p class="fw-bold text-vino fs-5"><?php echo number_format($fila['precio_unidad'], 2, ',', '.'); ?>€</p>
-                                    </header>
-                                    
-                                    <button type="button" class="btn btn-outline-vino btn-sm px-4 rounded-0" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#<?php echo $modalID; ?>">
-                                        Ver Detalle
-                                    </button>
-                                </div>
-                            </article>
-
-                            <div class="modal fade" id="<?php echo $modalID; ?>" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content rounded-0 border-0">
-            
-            <div class="modal-header border-0">
-                <h4 class="modal-title fw-light fs-5"><?php echo $fila['nombre']; ?></h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-
-            <div class="modal-body">
-                
-                <article class="row align-items-center">
-                    
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <figure class="m-0 text-center">
-                            <img src="./img/<?php echo $fila['imagen_url']; ?>" class="img-fluid" alt="Vista detallada de <?php echo $fila['nombre']; ?>" style="max-height: 400px; width: 100%; object-fit: contain;">
-                        </figure>
-                    </div>
-
-                    <section class="col-md-6">
-                        <header>
-                            <h3 class="fw-normal text-vino mb-2"><?php echo $fila['nombre']; ?></h3>
-                            <p class="display-6 fw-bold mb-3"><?php echo number_format($fila['precio_unidad'], 2, ',', '.'); ?>€</p>
-                        </header>
-                        
-                        <div class="descripcion mb-4">
-                            <p class="text-muted">
-                                <?php echo $fila['descripcion']; ?>
-                            </p>
-                            
-                            <a href="./php/producto_detalle.php?id=<?php echo $fila['id_producto']; ?>" class="text-vino text-decoration-none small fw-bold">
-                                <i class="bi bi-box-arrow-up-right me-1"></i> Ver ficha completa del producto
-                            </a>
-                        </div>
-                        
-                        <footer class="d-grid gap-2 mt-4">
-                            <a href="carrito.php?add=<?php echo $fila['id_producto']; ?>" class="btn btn-vino btn-lg rounded-0">
-                                AÑADIR AL CARRITO
-                            </a>
-                            
-                            <button type="button" class="btn btn-outline-secondary rounded-0" data-bs-dismiss="modal">
-                                Seguir mirando
-                            </button>
-                        </footer>
-                    </section>
-
-                </article>
-
-            </div>
-        </div>
-    </div>
-</div>
-                            </div>
-                    <?php } ?>
+                <div class="precio-block mb-4">
+                    <span class="display-5 fw-bold text-dark"><?php echo number_format($producto['precio_unidad'], 2, ',', '.'); ?>€</span>
+                    <span class="text-muted fs-5 ms-2">/ unidad</span>
                 </div>
-            </div>
-        </section>
 
-        <section class="py-5 section-promo">
-            <div class="container">
-                <div class="row align-items-center">
-                    
-                    <div class="col-md-6 mb-4 mb-md-0">
-                        <div class="promo-img-container">
-                            <img src="./img/experienciaInicio.jpeg" alt="Experiencia de Cata en viñedos" class="img-fluid w-100 shadow-sm">
+                <div class="descripcion mb-5">
+                    <h2 class="h5 text-vino border-bottom pb-2 mb-3">Descripción</h2>
+                    <p class="text-secondary lead fs-6">
+                        <?php echo $producto['descripcion']; ?>
+                    </p>
+                    <p class="text-muted small">
+                        Un producto de excelente calidad seleccionado por nuestros expertos sommeliers para garantizar la mejor experiencia en tu mesa.
+                    </p>
+                </div>
+
+                <article class="compra-actions">
+                    <form action="../carrito.php" method="GET" class="d-flex gap-3">
+                        <input type="hidden" name="add" value="<?php echo $producto['id_producto']; ?>">
+                        
+                        <div class="input-group w-auto">
+                            <span class="input-group-text bg-white border-end-0">Cant:</span>
+                            <input type="number" name="cantidad" value="1" min="1" class="form-control text-center border-start-0" style="width: 70px;">
                         </div>
-                    </div>
 
-                    <div class="col-md-6 ps-md-5">
-                        <h2 class="fw-light text-vino mb-3 h3">Vive la Experiencia Riverview</h2>
-                        <p class="text-muted mb-4 fw-light text-promo">
-                            No solo vendemos vino, creamos recuerdos. Ven a visitar nuestros viñedos al atardecer y descubre el proceso artesanal detrás de cada botella.
-                        </p>
-                        <a href="#" class="link-experiencia text-decoration-none text-uppercase small fw-bold text-vino">
-                            Reservar visita guiada <i class="bi bi-arrow-right ms-2"></i>
+                        <button type="submit" class="btn btn-vino btn-lg flex-grow-1">
+                            AÑADIR AL CARRITO
+                        </button>
+                    </form>
+                    
+                    <div class="mt-3 text-center">
+                        <a href="tienda.php" class="text-muted small text-decoration-none">
+                            <i class="bi bi-arrow-left"></i> Seguir comprando
                         </a>
                     </div>
+                </article>
+            </section>
 
-                </div>
-            </div>
-        </section>
+        </article>
 
     </main>
 
+    
 <footer class="footer-riverview pt-5 pb-4">
     <div class="container text-center text-md-start">
         <div class="row text-center text-md-start">
@@ -362,8 +295,6 @@ $sentencia->execute();
             
         </div>
     </div>
-    
-    <script src="./css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-</footer>
-    
+</footer>  
 </body>
+</html>

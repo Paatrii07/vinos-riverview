@@ -170,16 +170,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="alert alert-danger text-center"><?php echo $mensaje_error; ?></div>
                     <?php endif; ?>
 
-                    <form action="login.php" method="POST">
+                   <form action="login.php" method="POST" novalidate class="needs-validation">
                         
                         <div class="mb-3">
                             <label class="form-label text-muted small">Correo Electrónico</label>
                             <input type="email" name="email" class="form-control" required>
+                            <div class="invalid-feedback">
+                                Por favor, introduce tu correo electrónico.
+                            </div>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label text-muted small">Contraseña</label>
                             <input type="password" name="password" class="form-control" required>
+                            <div class="invalid-feedback">
+                                Por favor, introduce tu contraseña.
+                            </div>
                         </div>
 
                         <div class="d-grid gap-2">
@@ -257,5 +263,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </footer>
+<script>
+    // Esperamos a que todo el HTML se cargue
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Buscamos el formulario con la clase .needs-validation
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Bucle para interceptar el envío
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                // Si el formulario no es válido...
+                if (!form.checkValidity()) {
+                    event.preventDefault() // Evitamos el envío
+                    event.stopPropagation() // Paramos la propagación
+                }
+
+                // Añadimos la clase was-validated para que Bootstrap muestre los bordes rojos y mensajes
+                form.classList.add('was-validated')
+            }, false)
+        })
+    });
+</script>
     
 </body>
+</html>
+

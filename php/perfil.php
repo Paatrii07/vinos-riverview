@@ -76,33 +76,66 @@ $datos_usuario = $stmt_leer->fetch(PDO::FETCH_ASSOC);
 </head>
 <body class="bg-light">
 
-    <nav class="navbar bg-white fixed-top shadow-sm">
-        <div class="container-fluid position-relative">
-            
-            <div class="d-flex align-items-center">
-                <a href="../index.php" class="text-secondary text-decoration-none small">
-                    <i class="bi bi-arrow-left me-1"></i> Volver a la Tienda
-                </a>
-            </div>
-
-            <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="../index.php">
-                <img src="../img/logo.png" alt="Vinos Riverview" height="102">
-            </a>
-
-            <div class="d-flex gap-3 align-items-center">
-                <span class="text-muted d-none d-md-block">
-                    Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?>
-                </span>
+    <header>
+        <nav class="navbar bg-white fixed-top">
+            <div class="container-fluid position-relative">
                 
-                <a href="logout.php" class="btn btn-outline-vino btn-sm rounded-0 text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">
-                    Cerrar Sesión
-                </a>
-            </div>
-            
-        </div>
-    </nav>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-    <div class="container pb-5 perfil-container">
+                <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="../index.php">
+                    <img src="../img/logo.png" alt="Vinos Riverview" height="102">
+                </a>
+
+                <div class="d-flex gap-3 align-items-center ms-auto">
+                    <a href="./tienda.php" class="text-secondary text-decoration-none d-none d-md-block small text-uppercase" style="letter-spacing: 1px;">
+                        <i class="bi bi-shop me-1"></i> Ir a Tienda
+                    </a>
+
+                    <div class="vr d-none d-md-block mx-2"></div>
+
+                    <a href="logout.php" class="text-dark text-decoration-none" title="Cerrar Sesión">
+                        <i class="bi bi-box-arrow-right" style="font-size: 1.5rem;"></i>
+                        <span class="d-none d-lg-inline small ms-1">Salir</span>
+                    </a>
+                </div>
+            
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title">Menú</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.php">Inicio</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tienda</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Vinos</a></li>
+                                <li><a class="dropdown-item" href="#">Quesos</a></li>
+                                <li><a class="dropdown-item" href="#">Embutidos</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Experiencias / Catas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Sobre Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contacto</a>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container perfil-container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 
@@ -180,122 +213,130 @@ $datos_usuario = $stmt_leer->fetch(PDO::FETCH_ASSOC);
                                     Guardar Cambios
                                 </button>
                             </form>
+
+                            <hr class="my-4"> 
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="text-muted small m-0">
+                                        Si deseas darte de baja permanentemente. 
+                                    </p>
+                                </div>
+                               <button type="button" class="btn btn-outline-danger btn-sm fw-bold px-3" data-bs-toggle="modal" data-bs-target="#modalEliminar">
+                                    ELIMINAR CUENTA
+                                </button>
+                            </div>
+
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="pedidos" role="tabpanel">
-                        <div class="card border-0 shadow-sm p-4">
-                            <div class="alert alert-info small mb-3">
-                                <i class="bi bi-info-circle me-2"></i> Historial de pedidos próximamente disponible.
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Nº Pedido</th>
-                                            <th>Fecha</th>
-                                            <th>Estado</th>
-                                            <th>Total</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="fw-bold">#RV-2025-001</td>
-                                            <td>14/01/2026</td>
-                                            <td><span class="badge bg-success">Entregado</span></td>
-                                            <td>45.50€</td>
-                                            <td class="text-end"><button class="btn btn-sm btn-outline-secondary">Ver</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="card border-0 shadow-sm p-4 text-center">
+                           <p class="text-muted">Aún no tienes pedidos registrados.</p>
+                           <a href="./tienda.php" class="btn btn-vino btn-sm">Ir a comprar</a>
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="experiencias" role="tabpanel">
                         <div class="card border-0 shadow-sm p-4">
-                            <h5 class="fw-light mb-4">Próximas Reservas</h5>
-                            <div class="card mb-3 border border-light bg-light">
-                                <div class="row g-0 align-items-center">
-                                    <div class="col-md-2 text-center p-3">
-                                        <div class="bg-white rounded p-2 shadow-sm">
-                                            <h3 class="m-0 text-vino fw-bold">25</h3>
-                                            <small class="text-uppercase text-muted">Ene</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8 p-3">
-                                        <h5 class="card-title mb-1">Cata de Vinos Premium</h5>
-                                        <p class="card-text text-muted small mb-0">
-                                            <i class="bi bi-clock me-1"></i> 18:00H <br>
-                                            <i class="bi bi-geo-alt me-1"></i> Bodega Principal
-                                        </p>
-                                    </div>
-                                    <div class="col-md-2 p-3 text-end">
-                                        <span class="badge bg-primary">Confirmada</span>
-                                    </div>
-                                </div>
-                            </div>
+                             <p class="text-muted">No tienes reservas activas.</p>
                         </div>
                     </div>
 
-                </div> </div>
+                </div> 
+            </div>
         </div>
     </div>
 
-    <footer class="footer-riverview pt-5 pb-4">
-        <div class="container text-center text-md-start">
-            <div class="row text-center text-md-start">
+    <div class="modal fade" id="modalEliminar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
                 
-                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
-                    <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Vinos Riverview</h5>
-                    <p>
-                        Tradición, sabor y la mejor selección de nuestra tierra. 
-                        Llevamos la excelencia de la bodega directamente a tu mesa.
+                <div class="modal-header modal-header-vino">
+                    <h5 class="modal-title modal-title-vino">
+                        <i class="bi bi-shield-exclamation me-2"></i> Eliminar Cuenta
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                
+
+                <div class="modal-body text-center p-4">
+                    <p class="lead text-dark mb-3">¿Realmente deseas marcharte?</p>
+                    <p class="text-muted small">
+                        Esta acción borrará tus datos, tu historial de pedidos y tus reservas. 
+                        <strong>No se puede deshacer.</strong>
                     </p>
                 </div>
 
-                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-                    <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Explorar</h5>
-                    <p><a href="../index.php" class="footer-link">Inicio</a></p>
-                    <p><a href="../tienda.php" class="footer-link">Tienda</a></p>
-                    <p><a href="#" class="footer-link">Catas y Eventos</a></p>
-                    <p><a href="#" class="footer-link">Sobre Nosotros</a></p>
-                </div>
-
-                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-                    <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Contacto</h5>
-                    <p><i class="bi bi-house-door-fill me-2"></i> Calle del Vino, 12, La Rioja</p>
-                    <p><i class="bi bi-envelope-fill me-2"></i> info@vinosriverview.com</p>
-                    <p><i class="bi bi-telephone-fill me-2"></i> +34 912 345 678</p>
-                </div>
-                
-            </div>
-
-            <hr class="mb-4">
-
-            <div class="row align-items-center">
-                <div class="col-md-7 col-lg-8">
-                    <p>© 2025 <strong>Vinos Riverview</strong>. Todos los derechos reservados.</p>
-                </div>
-                <div class="col-md-5 col-lg-4">
-                    <div class="text-center text-md-end">
-                        <ul class="list-unstyled list-inline">
-                            <li class="list-inline-item">
-                                <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="modal-footer justify-content-center border-0 pb-4 pt-0">
+                    <button type="button" class="btn btn-light border px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="borrarCuenta.php" class="btn btn-dark px-4">
+                        Sí, eliminar definitivamente
+                    </a>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
 
+<footer class="footer-riverview pt-5 pb-4">
+    <div class="container text-center text-md-start">
+        <div class="row text-center text-md-start">
+            
+            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Vinos Riverview</h5>
+                <p>
+                    Tradición, sabor y la mejor selección de nuestra tierra. 
+                    Llevamos la excelencia de la bodega directamente a tu mesa.
+                </p>
+            </div>
+
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Explorar</h5>
+                <p><a href="index.php" class="footer-link">Inicio</a></p>
+                <p><a href="tienda.php" class="footer-link">Tienda</a></p>
+                <p><a href="#" class="footer-link">Catas y Eventos</a></p>
+                <p><a href="#" class="footer-link">Sobre Nosotros</a></p>
+            </div>
+
+            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Contacto</h5>
+                <p><i class="bi bi-house-door-fill me-2"></i> Calle del Vino, 12, La Rioja</p>
+                <p><i class="bi bi-envelope-fill me-2"></i> info@vinosriverview.com</p>
+                <p><i class="bi bi-telephone-fill me-2"></i> +34 912 345 678</p>
+            </div>
+            
+        </div>
+
+        <hr class="mb-4">
+
+        <div class="row align-items-center">
+            
+            <div class="col-md-7 col-lg-8">
+                <p>© 2025 <strong>Vinos Riverview</strong>. Todos los derechos reservados.</p>
+            </div>
+
+            <div class="col-md-5 col-lg-4">
+                <div class="text-center text-md-end">
+                    <ul class="list-unstyled list-inline">
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</footer>
+
+
+    
 </body>
 </html>
