@@ -161,7 +161,6 @@ nav {
 
 
 
-
 /* FOOTER */
 
 .footer-riverview {
@@ -207,4 +206,10 @@ nav {
 .btn-floating:hover {
     transform: scale(1.2); /* Efecto zoom */
 }
+
+.rrss{
+font-size: 23px;
+}
+
+
 

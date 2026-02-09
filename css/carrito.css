@@ -1,11 +1,41 @@
+/* =========================================
+   1. ESTILOS GENERALES Y FORMULARIOS
+   ========================================= */
 
 /* Empujamos el contenido para que no se esconda bajo el menú fijo */
 body {
-    
     color: #444444;
     padding-top: 100px; /* Ajustado ligeramente para dar aire al header */
     background-color: #fff;
 }
+
+/* BUSCAR PRODUCTOS EN NAVEGADOR */
+.btn-vino {
+    color: #722F37;              /* Color del texto y borde */
+    border-color: #722F37;       /* Color del borde */
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-vino:hover {
+    background-color: #722F37;   /* Al pasar el ratón, se rellena de vino */
+    color: white;                /* El texto se vuelve blanco */
+    border-color: #722F37;
+}
+
+/* Quitar el brillo azul de Bootstrap y ponerlo color Vino */
+.form-control:focus {
+    border-color: #722F37; /* Cambia el borde sólido a vino */
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25); /* El brillo suave */
+}
+
+/* Buscador desplegable superior (ajuste específico) */
+.buscador-superior input.form-control {
+    box-shadow: none; /* Quitamos sombra extra en la barra superior */
+}
+
+
+
 
 /* =========================================
     2. CABECERA Y NAVEGACIÓN (HEADER)
@@ -118,47 +148,6 @@ nav {
 }
 
 
-
-/* Enlaces de la barra lateral (Categorías) */
-
-.menu-lateral{
-    top: 100px;
-}
-.sidebar-link {
-    text-decoration: none;
-    color: #555;
-    display: block;
-    padding: 10px;
-    border-radius: 5px;
-    transition: 0.2s;
-}
-
-.sidebar-link:hover {
-    background-color: #f8f9fa;
-    color: #722F37; /* Color vino */
-    padding-left: 15px;
-}
-
-.sidebar-link.active {
-    background-color: #722F37;
-    color: white;
-}
-
-/* Ajustes de las imágenes de producto en la tienda */
-.card-img-top {
-    height: 250px;
-    object-fit: contain;
-    padding: 20px;
-}
-
-/* Precio grande destacado */
-.precio-grande {
-    font-size: 1.5rem;
-    color: #722F37;
-    font-weight: bold;
-}
-
-
 /* =========================================
    4. DROPDOWN DE USUARIO (SOLO PARA LOGIN)
    ========================================= */
@@ -174,53 +163,41 @@ nav {
     color: white;              
 }
 
-/* Personalización de los botones de añadir a la cesta y los modales de compra */
 
-.text-vino{
-    color:#722F37 !important;
-}
-.btn-vino {
-    color: #722F37;              /* Color del texto y borde */
-    border-color: #722F37;       /* Color del borde */
+/* MENÚ LATERAL DE SUBTOTAL */
+
+.btn{
+    color: #722F37;
+    border: 1px solid #722F37;
     background-color: transparent;
     transition: all 0.3s ease;
 }
 
-.btn-vino:hover {
-    background-color: #722F37;   /* Al pasar el ratón, se rellena de vino */
-    color: white;                /* El texto se vuelve blanco */
-    border-color: #722F37;
+.btn-outline-vino:hover {
+    background-color: #722F37;
+    color: white;
 }
 
-.btn-outline-vino:hover{
-    text-decoration: underline;
-    text-underline-offset: 5px;
+
+/* Personalizar la lista de productos añadidos a la cesta */
+
+.imagenes{
+width: 60px; 
+height: 60px; 
+object-fit: contain;
 }
 
-/* Título y descripciones en los grids de los productos */
-
-    /* Corta el título a 2 líneas siempre */
-    .titulo-fijo {
-        display: -webkit-box; 
-        -webkit-line-clamp: 2; 
-        -webkit-box-orient: vertical;
-        overflow: hidden; 
-        height: 3rem; 
-        margin-bottom: 0.5rem;
-    }
-    /* Corta la descripción a 3 líneas siempre */
-    .desc-fija {
-        display: -webkit-box; 
-        -webkit-line-clamp: 3; 
-        -webkit-box-orient: vertical;
-        overflow: hidden; 
-        height: 4.5em; /* aprox 3 líneas */
-    }
+.cuadro-cantidad{
+    max-width: 40px;
+}
 
 
 
 
-/* FOOTER  */
+
+
+
+
 
 .footer-riverview {
     background-color: rgb(243, 243, 243);
@@ -241,13 +218,13 @@ nav {
     margin-bottom: 1.2rem;
 }
 
-.footer-link {
+.footer-link{
     text-decoration: none;         
     color: #5a5a5a;                
     transition: all 0.3s ease;
 }
 
-.footer-link:hover {
+.footer-link:hover{
     color: #722F37 !important;     
     background-color: transparent; 
     padding-left: 5px;             
@@ -266,7 +243,7 @@ nav {
     transform: scale(1.2); /* Efecto zoom */
 }
 
-
-
-
+.rrss{
+font-size: 23px;
+}
 
