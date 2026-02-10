@@ -7,6 +7,12 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
+// Calcular total de productos para la burbuja roja
+$total_cesta = 0;
+if (isset($_SESSION['carrito'])) {
+    $total_cesta = array_sum($_SESSION['carrito']);
+}
+
 // 2. CONEXIÓN BBDD
 $url = 'mysql:dbname=vinos_riverview;host=localhost';
 $user = 'root';
@@ -101,36 +107,54 @@ $datos_usuario = $stmt_leer->fetch(PDO::FETCH_ASSOC);
                     </a>
                 </div>
             
-                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+               <aside class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                     <div class="offcanvas-header">
-                        <h5 class="offcanvas-title">Menú</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar menú"></button>
                     </div>
+                    
                     <div class="offcanvas-body">
-                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.php">Inicio</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tienda</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Vinos</a></li>
-                                <li><a class="dropdown-item" href="#">Quesos</a></li>
-                                <li><a class="dropdown-item" href="#">Embutidos</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Experiencias / Catas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Sobre Nosotros</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contacto</a>
-                        </li>
-                    </ul>
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="../index.php">Inicio</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <a class="nav-link w-100" href="tienda.php">Tienda</a>
+                                    <a class="nav-link px-3" href="#menu-tienda" role="button" 
+                                        data-bs-toggle="collapse" aria-expanded="false" aria-controls="menu-tienda">
+                                        <i class="bi bi-chevron-down small"></i>
+                                    </a>
+                                </div>
+
+                                <div class="collapse" id="menu-tienda">
+                                    <ul class="nav flex-column ps-4 border-start ms-2 my-1 bg-light bg-opacity-25">
+                                        <li class="nav-item">
+                                            <a class="nav-link py-1" href="../php/tienda.php?categoria=vinos">Vinos</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link py-1" href="../php/tienda.php?categoria=quesos">Quesos</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link py-1" href="../php/tienda.php?categoria=embutidos">Embutidos</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Experiencias / Catas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Sobre Nosotros</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contacto</a>
+                            </li>
+                        </ul>
                     </div>
-                </div>
+                </aside>
             </div>
         </nav>
     </header>

@@ -61,7 +61,11 @@ nav{
     transform: scale(1.15); 
 }
 
-
+/* Numerito del carrito de la compra */
+.text-vino-carrito {
+    color: #722F37 !important;
+    font-size: 0.9rem;
+}
 
 
 /* --- ESTILOS DEL MENÚ NAVEGACIÓN --- */

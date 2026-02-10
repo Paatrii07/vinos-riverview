@@ -1,6 +1,14 @@
 <?php
-// 1. INICIAR SESIÓN Y CONEXIÓN
+// 1. INICIAR SESIÓN Y 
 session_start();
+
+// Calcular total de productos para la burbuja roja
+$total_cesta = 0;
+if (isset($_SESSION['carrito'])) {
+    $total_cesta = array_sum($_SESSION['carrito']);
+}
+
+// CONEXIÓN
 $url_db = 'mysql:dbname=vinos_riverview;host=localhost';
 $user_db = 'root';
 $pass_db = "";
@@ -12,12 +20,23 @@ try {
     $conexion = new PDO($url_db, $user_db, $pass_db);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // 2. VALIDAR ID
+    // 2. VALIDAR ID Y HACER LA CONSULTA COMPLETA
     if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $id = $_GET['id'];
         
-        // Consultamos el producto específico
-        $sql = "SELECT * FROM producto WHERE id_producto = :id";
+        // --- AQUÍ ESTÁ LA MAGIA ---
+        // Hacemos 3 LEFT JOINs para buscar datos en Vinos, Quesos Y Embutidos a la vez.
+        // Usamos "AS" para renombrar 'tiempo_curacion' y que no se mezclen.
+        $sql = "SELECT p.*, 
+                       v.graduacion, v.ano_cosecha, v.tipo_uva,
+                       q.tipo_leche, q.tiempo_curacion AS queso_curacion,
+                       e.tipo_carne, e.tiempo_curacion AS embutido_curacion
+                FROM producto p 
+                LEFT JOIN vino v ON p.id_producto = v.id_producto 
+                LEFT JOIN queso q ON p.id_producto = q.id_producto
+                LEFT JOIN embutido e ON p.id_producto = e.id_producto
+                WHERE p.id_producto = :id";
+        
         $stmt = $conexion->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -59,7 +78,7 @@ try {
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="index.php">
+                <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="../index.php">
                     <img src="../img/logo.png" alt="Vinos Riverview" height="102">
                 </a>
 
@@ -73,8 +92,8 @@ try {
                         <i class="bi bi-search icon-nav"></i>
                     </a>
 
-                    <?php if (!isset($_SESSION['usuario_id'])): ?>
-                        <a href="./php/login.php" class="text-dark">
+                    <?php if (!isset($_SESSION['usuario_id'])): ?> 
+                        <a href="./login.php?volver=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" class="text-dark">
                             <i class="bi bi-person icon-nav"></i>
                         </a>
                     <?php else: ?>
@@ -87,21 +106,27 @@ try {
                                 <li><hr class="dropdown-divider"></li>
                                 <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?>
                                     <li>
-                                        <a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">
+                                        <a class="dropdown-item fw-bold text-vino" href="../admin/panel.php">
                                             <i class="bi bi-speedometer2 me-2"></i> Panel de Control
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                 <?php endif; ?>
-                                <li><a class="dropdown-item" href="./php/perfil.php">Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="./perfil.php">Mi Perfil</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="./php/logout.php">Cerrar Sesión</a></li>
+                                <li><a class="dropdown-item text-danger" href="./logout.php">Cerrar Sesión</a></li>
                             </ul>
                         </div>
                     <?php endif; ?>
 
-                    <a href="carrito.php" class="text-dark">
-                        <i class="bi bi-cart icon-nav"></i>
+                    <a href="./carrito.php" class="text-dark position-relative text-decoration-none">
+                        <i class="bi bi-cart icon-nav" style="font-size: 1.5rem;"></i>
+                        <?php if ($total_cesta > 0): ?>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-vino-carrito">
+                                <?php echo $total_cesta; ?>
+                                <span class="visually-hidden">productos</span>
+                            </span>
+                        <?php endif; ?>
                     </a>
                 </div>
             
@@ -119,7 +144,7 @@ try {
                             
                             <li class="nav-item">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <a class="nav-link w-100" href="./php/tienda.php">Tienda</a>
+                                    <a class="nav-link w-100" href="./tienda.php">Tienda</a>
                                     <a class="nav-link px-3" href="#menu-tienda" role="button" 
                                         data-bs-toggle="collapse" aria-expanded="false" aria-controls="menu-tienda">
                                         <i class="bi bi-chevron-down small"></i>
@@ -129,13 +154,13 @@ try {
                                 <div class="collapse" id="menu-tienda">
                                     <ul class="nav flex-column ps-4 border-start ms-2 my-1 bg-light bg-opacity-25">
                                         <li class="nav-item">
-                                            <a class="nav-link py-1" href="./php/tienda.php?categoria=vinos">Vinos</a>
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=vinos">Vinos</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link py-1" href="./php/tienda.php?categoria=quesos">Quesos</a>
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=quesos">Quesos</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link py-1" href="./php/tienda.php?categoria=embutidos">Embutidos</a>
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=embutidos">Embutidos</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -157,7 +182,7 @@ try {
         </nav>
 
         <div class="collapse bg-white shadow-sm buscador-superior" id="searchBar">
-            <div class="container py-4"> <form action="./php/tienda.php" method="GET" class="d-flex justify-content-center align-items-center gap-2">
+            <div class="container py-4"> <form action="./tienda.php" method="GET" class="d-flex justify-content-center align-items-center gap-2">
                     
                     <input type="text" name="q" class="form-control input-busqueda" placeholder="Buscar producto...">
                     
@@ -171,25 +196,30 @@ try {
 
     </header>
 
-    <main class="container mb-5" style="margin-top: 140px;">
+    <main class="container-fluid mb-5">
         
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none text-muted">Inicio</a></li>
-                <li class="breadcrumb-item"><a href="tienda.php" class="text-decoration-none text-muted">Tienda</a></li>
+                <li class="breadcrumb-item"><a href="./tienda.php" class="text-decoration-none text-muted">Tienda</a></li>
                 <li class="breadcrumb-item active text-vino" aria-current="page"><?php echo $producto['nombre']; ?></li>
             </ol>
         </nav>
 
-        <article class="row align-items-center g-5">
+        <article class="row align-items-start">
             
             <div class="col-md-6">
-                <figure class="text-center p-5 bg-light rounded-3 shadow-sm m-0">
-                    <img src="../img/<?php echo $producto['imagen_url']; ?>" 
-                        class="img-fluid" 
-                        alt="<?php echo $producto['nombre']; ?>" 
-                        style="max-height: 500px; object-fit: contain;">
-                </figure>
+                <div class="sticky-top" style="top: 100px; z-index: 1;">
+                    <figure class="bg-light rounded-3 shadow-sm mt-5">
+                        
+                        <div class="ratio ratio-1x1">
+                            <img src="../img/<?php echo $producto['imagen_url']; ?>" 
+                                class="object-fit-contain p-4" 
+                                alt="<?php echo $producto['nombre']; ?>">
+                        </div>
+
+                    </figure>
+                </div>
             </div>
 
             <section class="col-md-6">
@@ -208,18 +238,68 @@ try {
                     <p class="text-secondary lead fs-6">
                         <?php echo $producto['descripcion']; ?>
                     </p>
-                    <p class="text-muted small">
+
+                    <?php if (!empty($producto['tipo_uva'])): ?>
+                        <div class="bg-light p-3 rounded-3 mt-4 border border-light-subtle">
+                            <div class="row text-center text-muted">
+                                <div class="col-4 border-end">
+                                    <small class="d-block text-uppercase fw-bold ls-1" style="font-size: 0.7rem;">Variedad</small>
+                                    <span class="text-dark fw-bold"><?php echo $producto['tipo_uva']; ?></span>
+                                </div>
+                                <div class="col-4 border-end">
+                                    <small class="d-block text-uppercase fw-bold ls-1" style="font-size: 0.7rem;">Cosecha</small>
+                                    <span class="text-dark fw-bold"><?php echo $producto['ano_cosecha']; ?></span>
+                                </div>
+                                <div class="col-4">
+                                    <small class="d-block text-uppercase fw-bold ls-1" style="font-size: 0.7rem;">Alcohol</small>
+                                    <span class="text-dark fw-bold"><?php echo $producto['graduacion']; ?>%</span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($producto['tipo_leche'])): ?>
+                        <div class="bg-light p-3 rounded-3 mt-4 border border-light-subtle">
+                            <div class="row text-center text-muted justify-content-center">
+                                <div class="col-5 border-end">
+                                    <small class="d-block text-uppercase fw-bold ls-1" style="font-size: 0.7rem;">Tipo de Leche</small>
+                                    <span class="text-dark fw-bold"><?php echo $producto['tipo_leche']; ?></span>
+                                </div>
+                                <div class="col-5">
+                                    <small class="d-block text-uppercase fw-bold ls-1" style="font-size: 0.7rem;">Curación</small>
+                                    <span class="text-dark fw-bold"><?php echo $producto['queso_curacion']; ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($producto['tipo_carne'])): ?>
+                        <div class="bg-light p-3 rounded-3 mt-4 border border-light-subtle">
+                            <div class="row text-center text-muted justify-content-center">
+                                <div class="col-5 border-end">
+                                    <small class="d-block text-uppercase fw-bold ls-1" style="font-size: 0.7rem;">Carne</small>
+                                    <span class="text-dark fw-bold"><?php echo $producto['tipo_carne']; ?></span>
+                                </div>
+                                <div class="col-5">
+                                    <small class="d-block text-uppercase fw-bold ls-1" style="font-size: 0.7rem;">Curación</small>
+                                    <span class="text-dark fw-bold"><?php echo $producto['embutido_curacion']; ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <p class="text-muted small mt-3">
                         Un producto de excelente calidad seleccionado por nuestros expertos sommeliers para garantizar la mejor experiencia en tu mesa.
                     </p>
                 </div>
 
                 <article class="compra-actions">
-                    <form action="../carrito.php" method="GET" class="d-flex gap-3">
+                    <form action="./carrito.php" method="GET" class="d-flex gap-3">
                         <input type="hidden" name="add" value="<?php echo $producto['id_producto']; ?>">
                         
                         <div class="input-group w-auto">
                             <span class="input-group-text bg-white border-end-0">Cant:</span>
-                            <input type="number" name="cantidad" value="1" min="1" class="form-control text-center border-start-0" style="width: 70px;">
+                            <input type="number" name="cantidad" value="1" min="1" class="form-control text-center border-start-0 " style="width: 70px;">
                         </div>
 
                         <button type="submit" class="btn btn-vino btn-lg flex-grow-1">
@@ -228,7 +308,7 @@ try {
                     </form>
                     
                     <div class="mt-3 text-center">
-                        <a href="tienda.php" class="text-muted small text-decoration-none">
+                        <a href="./tienda.php" class="text-muted small text-decoration-none">
                             <i class="bi bi-arrow-left"></i> Seguir comprando
                         </a>
                     </div>
@@ -254,10 +334,10 @@ try {
 
             <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
                 <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Explorar</h5>
-                <p><a href="index.php" class="footer-link">Inicio</a></p>
-                <p><a href="./php/tienda.php" class="footer-link">Tienda</a></p>
-                <p><a href="./php/experiencias.php" class="footer-link">Catas y Eventos</a></p>
-                <p><a href="./php/nosotros.php" class="footer-link">Sobre Nosotros</a></p>
+                <p><a href="../index.php" class="footer-link">Inicio</a></p>
+                <p><a href="./tienda.php" class="footer-link">Tienda</a></p>
+                <p><a href="./experiencias.php" class="footer-link">Catas y Eventos</a></p>
+                <p><a href="./nosotros.php" class="footer-link">Sobre Nosotros</a></p>
             </div>
 
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
@@ -279,15 +359,15 @@ try {
 
             <div class="col-md-5 col-lg-4">
                 <div class="text-center text-md-end">
-                    <ul class="list-unstyled list-inline">
+                    <ul class="rrss list-unstyled list-inline">
                         <li class="list-inline-item">
-                            <a href="http://www.facebook.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
+                            <a href="http://www.facebook.com" class="btn-floating btn-sm"><i class="bi bi-facebook"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="http://www.x.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
+                            <a href="http://www.x.com" class="btn-floating btn-sm"><i class="bi bi-twitter-x"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="http://www.instagram.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
+                            <a href="http://www.instagram.com" class="btn-floating btn-sm"><i class="bi bi-instagram"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -295,6 +375,45 @@ try {
             
         </div>
     </div>
-</footer>  
+</footer> 
+    <div class="modal fade" id="modalExito" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content text-center p-4">
+                <div class="mb-3">
+                    <i class="text-vino bi bi-check-circle display-1"></i>
+                </div>
+                <h3 class="fw-light mb-2">¡Producto añadido!</h3>
+                <p class="text-muted mb-4">Ya tienes este producto en tu cesta.</p>
+                
+                <div class="d-grid gap-2">
+                    <a href="./carrito.php" class="btn btn-vino">
+                        IR A LA CESTA
+                    </a>
+                    
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Seguir comprando
+                    </button>
+                </div>
+            </div>
+        </div> 
+        
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Miramos si la URL tiene el mensaje secreto "?modal_exito=true"
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('modal_exito')) {
+            // Abrimos el modal
+            var myModal = new bootstrap.Modal(document.getElementById('modalExito'));
+            myModal.show();
+            
+            // Limpiamos la URL para que no salga otra vez al recargar
+            const newUrl = window.location.pathname + window.location.search.replace(/[\?&]modal_exito=true/, '').replace(/^&/, '?');
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+    
+</script>
+<script src="./css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

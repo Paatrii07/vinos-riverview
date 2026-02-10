@@ -1,9 +1,16 @@
 <?php
+
 // 1. Iniciar sesión
 session_start();
 
+// Calcular total de productos para el recuento de productos en el icono del carrito
+$total_cesta = 0;
+if (isset($_SESSION['carrito'])) {
+    $total_cesta = array_sum($_SESSION['carrito']);
+}
+
 // 2. Conexión a Base de Datos
-$url = 'mysql:dbname=vinos_riverview;host=localhost';
+$url = 'mysql:dbname=vinos_riverview;host=127.0.0.1';
 $user = 'root';
 $pass = "";
 
@@ -61,8 +68,10 @@ $sentencia->execute();
                         <i class="bi bi-search icon-nav"></i>
                     </a>
 
-                    <?php if (!isset($_SESSION['usuario_id'])): ?> <!-- Si NO hay usuario logueado, muestras el icono de la persona vacía (para ir al Login). -->
-                        <a href="./php/login.php" class="text-dark">
+
+
+                    <?php if (!isset($_SESSION['usuario_id'])): ?> <!-- Te redirige a login y despues de loguearte te redirige a la página desde la que accedes -->
+                        <a href="./php/login.php?volver=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" class="text-dark">
                             <i class="bi bi-person icon-nav"></i>
                         </a>
                     <?php else: ?> <!-- (Si SÍ hay usuario): Muestras un menú desplegable con su nombre ($_SESSION['nombre']), enlace a "Mi Perfil" y "Cerrar Sesión". -->
@@ -88,8 +97,14 @@ $sentencia->execute();
                         </div>
                     <?php endif; ?>
 
-                    <a href="carrito.php" class="text-dark">
-                        <i class="bi bi-cart icon-nav"></i>
+                    <a href="./php/carrito.php" class="text-dark position-relative text-decoration-none">
+                        <i class="bi bi-cart icon-nav" style="font-size: 1.5rem;"></i>
+                        <?php if ($total_cesta > 0): ?>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-vino-carrito">
+                                <?php echo $total_cesta; ?>
+                                <span class="visually-hidden">productos</span>
+                            </span>
+                        <?php endif; ?>
                     </a>
                 </div>
             
@@ -259,12 +274,12 @@ $sentencia->execute();
                         </div>
                         
                         <footer class="d-grid gap-2 mt-4">
-                            <a href="carrito.php?add=<?php echo $fila['id_producto']; ?>" class="btn btn-vino btn-lg rounded-0">
+                            <a href="./php/carrito.php?add=<?php echo $fila['id_producto']; ?>" class="btn btn-vino btn-lg rounded-0">
                                 AÑADIR AL CARRITO
                             </a>
-                            
+    
                             <button type="button" class="btn btn-outline-secondary rounded-0" data-bs-dismiss="modal">
-                                Seguir mirando
+                                Seguir comprando
                             </button>
                         </footer>
                     </section>
@@ -346,15 +361,15 @@ $sentencia->execute();
 
             <div class="col-md-5 col-lg-4">
                 <div class="text-center text-md-end">
-                    <ul class="list-unstyled list-inline">
+                    <ul class="rrss list-unstyled list-inline">
                         <li class="list-inline-item">
-                            <a href="http://www.facebook.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
+                            <a href="http://www.facebook.com" class="btn-floating btn-sm"><i class="bi bi-facebook"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="http://www.x.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
+                            <a href="http://www.x.com" class="btn-floating btn-sm"><i class="bi bi-twitter-x"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="http://www.instagram.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
+                            <a href="http://www.instagram.com" class="btn-floating btn-sm"><i class="bi bi-instagram"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -363,7 +378,47 @@ $sentencia->execute();
         </div>
     </div>
     
-    <script src="./css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </footer>
+    <div class="modal fade" id="modalExito" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content text-center p-4">
+            <div class="mb-3">
+                <i class="text-vino bi bi-check-circle display-1"></i>
+            </div>
+            <h3 class="fw-light mb-2">¡Producto añadido!</h3>
+            <p class="text-muted mb-4">Ya tienes este producto en tu cesta.</p>
+            
+            <div class="d-grid gap-2">
+                <a href="php/carrito.php" class="btn btn-vino">
+                    IR A LA CESTA
+                </a>
+                
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Seguir comprando
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modales para añadir a la cesta o continuar comprando -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Miramos si la URL tiene el mensaje secreto "?modal_exito=true"
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('modal_exito')) {
+            // Abrimos el modal
+            var myModal = new bootstrap.Modal(document.getElementById('modalExito'));
+            myModal.show();
+            
+            // Limpiamos la URL para que no salga otra vez al recargar
+            const newUrl = window.location.pathname + window.location.search.replace(/[\?&]modal_exito=true/, '').replace(/^&/, '?');
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
     
+</script>
+<script src="./css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

@@ -79,6 +79,12 @@ nav{
     box-shadow: 0 0vh 1.1vh #722F37 !important;
 }
 
+/* Numerito del carrito de la compra */
+.text-vino-carrito {
+    color: #722F37 !important;
+    font-size: 0.9rem;
+}
+
 /* --- ESTILOS DEL DESPLEGABLE (DROPDOWN) --- */
 
 

@@ -1,6 +1,15 @@
 <?php
-// 1. INICIAR SESIÓN Y CONEXIÓN
+// 1. INICIAR SESIÓN 
 session_start();
+
+
+// Calcular total de productos para la burbuja roja
+$total_cesta = 0;
+if (isset($_SESSION['carrito'])) {
+    $total_cesta = array_sum($_SESSION['carrito']);
+}
+
+// CONEXIÓN
 $url_db = 'mysql:dbname=vinos_riverview;host=localhost';
 $user_db = 'root';
 $pass_db = "";
@@ -63,7 +72,7 @@ $stmt->execute();
 </head>
 <body>
 
-        <header>
+    <header>
         <nav class="navbar bg-white fixed-top">
             <div class="container-fluid position-relative">
                 
@@ -86,7 +95,7 @@ $stmt->execute();
                     </a>
 
                     <?php if (!isset($_SESSION['usuario_id'])): ?>
-                        <a href="./login.php" class="text-dark">
+                        <a href="./login.php?volver=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" class="text-dark">
                             <i class="bi bi-person icon-nav"></i>
                         </a>
                     <?php else: ?>
@@ -112,8 +121,14 @@ $stmt->execute();
                         </div>
                     <?php endif; ?>
 
-                    <a href="carrito.php" class="text-dark">
-                        <i class="bi bi-cart icon-nav"></i>
+                    <a href="./carrito.php" class="text-dark position-relative text-decoration-none">
+                        <i class="bi bi-cart icon-nav" style="font-size: 1.5rem;"></i>
+                        <?php if ($total_cesta > 0): ?>
+                           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-vino-carrito">
+                                <?php echo $total_cesta; ?>
+                                <span class="visually-hidden">productos</span>
+                            </span>
+                        <?php endif; ?>
                     </a>
                 </div>
             
@@ -131,7 +146,7 @@ $stmt->execute();
                             
                             <li class="nav-item">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <a class="nav-link w-100" href="tienda.php">Tienda</a>
+                                    <a class="nav-link w-100" href="./tienda.php">Tienda</a>
                                     <a class="nav-link px-3" href="#menu-tienda" role="button" 
                                         data-bs-toggle="collapse" aria-expanded="false" aria-controls="menu-tienda">
                                         <i class="bi bi-chevron-down small"></i>
@@ -141,13 +156,13 @@ $stmt->execute();
                                 <div class="collapse" id="menu-tienda">
                                     <ul class="nav flex-column ps-4 border-start ms-2 my-1 bg-light bg-opacity-25">
                                         <li class="nav-item">
-                                            <a class="nav-link py-1" href="../php/tienda.php?categoria=vinos">Vinos</a>
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=vinos">Vinos</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link py-1" href="../php/tienda.php?categoria=quesos">Quesos</a>
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=quesos">Quesos</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link py-1" href="../php/tienda.php?categoria=embutidos">Embutidos</a>
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=embutidos">Embutidos</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -183,12 +198,14 @@ $stmt->execute();
 
     </header>
 
-    <main class="container mb-5" style="margin-top: 140px;">
-        <div class="row">
+    <main class="container mb-5">
+        <div class="row ">
             
             <aside class="col-lg-3 mb-4">
-                <div class="p-4 bg-white shadow-sm rounded">
+                <div class="menu-lateral p-4 bg-white shadow-sm rounded sticky-top">
                     <h2 class="h5 mb-4 text-vino border-bottom pb-2">CATEGORÍAS</h2>
+
+
                     
                     <nav> 
                         <a href="tienda.php" class="sidebar-link <?php echo (!$categoria_url) ? 'active' : ''; ?>">
@@ -211,7 +228,7 @@ $stmt->execute();
             </aside>
 
             <div class="col-lg-9">
-                <header class="d-flex justify-content-between align-items-center mb-4">
+                <header class="d-flex justify-content-between align-items-center mb-4 mt-3">
                     <h1 class="h2 fw-light">
                         <?php 
                             if($busqueda) echo 'Resultados para "' . htmlspecialchars($busqueda) . '"';
@@ -225,43 +242,54 @@ $stmt->execute();
                 <div class="row g-4">
                     <?php if ($stmt->rowCount() > 0): ?>
                         <?php while ($prod = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-                            <div class="col-md-6 col-lg-4">
-                                
-                                <article class="card h-100 border-0 shadow-sm product-card">
-                                    <div class="position-relative img-wrapper">
-                                        <a href="producto_detalle.php?id=<?php echo $prod['id_producto']; ?>">
-                                            <img src="../img/<?php echo $prod['imagen_url']; ?>" class="card-img-top" alt="Imagen de <?php echo $prod['nombre']; ?>">
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="card-body text-center">
-                                        <h3 class="card-title fw-normal h5"><?php echo $prod['nombre']; ?></h3>
-                                        
-                                        <p class="text-muted small">
-                                            <?php echo substr($prod['descripcion'], 0, 50) . '...'; ?>
-                                        </p>
-                                        
-                                        <p class="precio-grande my-2">
-                                            <?php echo number_format($prod['precio_unidad'], 2, ',', '.'); ?>€
-                                        </p>
-                                        
-                                        <div class="d-grid gap-2">
-                                            <a href="producto_detalle.php?id=<?php echo $prod['id_producto']; ?>" class="btn btn-outline-vino btn-sm">
-                                                Ver Detalle
-                                            </a>
-                                            <button class="btn btn-vino btn-sm">Añadir</button>
-                                        </div>
-                                    </div>
-                                </article>
+    <div class="col-md-6 col-lg-4">
+        
+        <article class="card h-100 border-0 shadow-sm product-card">
+            <div class="position-relative img-wrapper text-center border-bottom bg-white">
+                <a href="producto_detalle.php?id=<?php echo $prod['id_producto']; ?>" class="d-block py-3">
+                    <img src="../img/<?php echo $prod['imagen_url']; ?>" 
+                         alt="<?php echo $prod['nombre']; ?>" 
+                         class="img-fluid" 
+                         style="height: 200px; object-fit: contain;">
+                </a>
+            </div>
+            
+            <div class="card-body d-flex flex-column p-4">
+                
+                <h3 class="card-title h5 text-vino text-center titulo-fijo">
+                    <?php echo $prod['nombre']; ?>
+                </h3>
+                
+                <div class="text-muted small text-center mb-3 desc-fija">
+                    <?php echo $prod['descripcion']; ?>
+                </div>
+                
+                <div class="mt-auto w-100 border-top pt-3 text-center">
+                    <p class="fw-bold fs-4 mb-3 text-dark">
+                        <?php echo number_format($prod['precio_unidad'], 2, ',', '.'); ?>€
+                    </p>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="producto_detalle.php?id=<?php echo $prod['id_producto']; ?>" class="btn btn-outline-vino btn-sm">
+                            Ver Detalle
+                        </a>
+                        <a href="carrito.php?add=<?php echo $prod['id_producto']; ?>" class="btn btn-vino btn-sm rounded-0">
+                            <i class="bi bi-cart-plus me-1"></i> Añadir
+                        </a>
+                    </div>
+                </div>
 
+            </div>
+        </article>
+
+    </div>
+<?php endwhile; ?>
+                        <?php else: ?>
+                            <div class="col-12 text-center py-5">
+                                <h3 class="text-muted fw-light">No encontramos productos con ese filtro.</h3>
+                                <a href="tienda.php" class="btn btn-vino mt-3">Ver todos</a>
                             </div>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <div class="col-12 text-center py-5">
-                            <h3 class="text-muted fw-light">No encontramos productos con ese filtro.</h3>
-                            <a href="tienda.php" class="btn btn-vino mt-3">Ver todos</a>
-                        </div>
-                    <?php endif; ?>
+                        <?php endif; ?>
                 </div>
             </div>
 
@@ -324,5 +352,40 @@ $stmt->execute();
         </div>
     </div>
 </footer>
-    
+<div class="modal fade" id="modalExito" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content text-center p-4">
+            <div class="mb-3">
+                <i class="text-vino bi bi-check-circle display-1"></i>
+            </div>
+            <h3 class="fw-light mb-2">¡Producto añadido!</h3>
+            <p class="text-muted mb-4">Ya tienes este producto en tu cesta.</p>
+            
+            <div class="d-grid gap-2">
+                <a href="carrito.php" class="btn btn-vino">
+                    IR A LA CESTA
+                </a>
+                
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Seguir comprando
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales para añadir a la cesta o continuar comprando -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('modal_exito')) {
+            var myModal = new bootstrap.Modal(document.getElementById('modalExito'));
+            myModal.show();
+            
+            const newUrl = window.location.pathname + window.location.search.replace(/[\?&]modal_exito=true/, '').replace(/^&/, '?');
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script>
 </body>
+</html>

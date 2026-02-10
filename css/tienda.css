@@ -95,6 +95,13 @@ nav {
 }
 
 
+/* Numerito del carrito de la compra */
+.text-vino-carrito {
+    color: #722F37 !important;
+    font-size: 0.9rem;
+}
+
+
 /* =========================================
    3. MENÚ LATERAL (OFFCANVAS - TIENDA)
    ========================================= */

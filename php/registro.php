@@ -2,6 +2,12 @@
 // =======================================================
 // 1. CONEXIÓN A LA BASE DE DATOS (PDO)
 // =======================================================
+
+// Calcular total de productos para la burbuja roja
+$total_cesta = 0;
+if (isset($_SESSION['carrito'])) {
+    $total_cesta = array_sum($_SESSION['carrito']);
+}
 // Definimos las credenciales de la base de datos
 $url = 'mysql:dbname=vinos_riverview;host=localhost';
 $user = 'root';
@@ -139,8 +145,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="./login.php" class="text-dark">
                         <i class="bi bi-person" style="font-size: 1.5rem;"></i>
                     </a>
-                    <a href="./carrito.php" class="text-dark">
-                        <i class="bi bi-cart" style="font-size: 1.5rem;"></i>
+                    <a href="./carrito.php" class="text-dark position-relative text-decoration-none">
+                        <i class="bi bi-cart icon-nav" style="font-size: 1.5rem;"></i>
+                        <?php if ($total_cesta > 0): ?>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-vino-carrito">
+                                <?php echo $total_cesta; ?>
+                                <span class="visually-hidden">productos</span>
+                            </span>
+                        <?php endif; ?>
                     </a>
                 </div>
             
