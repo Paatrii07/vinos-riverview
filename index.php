@@ -148,10 +148,10 @@ $sentencia->execute();
                                 <a class="nav-link" href="#">Experiencias / Catas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Sobre Nosotros</a>
+                                <a class="nav-link" href="./php/nosotros.php">Sobre Nosotros</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Contacto</a>
+                                <a class="nav-link" href="./php/contacto.php">Contacto</a>
                             </li>
                         </ul>
                     </div>

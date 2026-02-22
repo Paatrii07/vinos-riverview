@@ -1,0 +1,61 @@
+/* =========================================
+   ESTILOS PREMIUM PARA CONTACTO
+   ========================================= */
+
+/* 1. Cabecera con degradado Vino -> Oscuro */
+.hero-contacto {
+    background: linear-gradient(135deg, #722F37 0%, #2b1014 100%);
+    padding: 80px 0;
+    color: white;
+    /* Si tienes una foto de la bodega, puedes usar esto en su lugar: */
+    /* background: linear-gradient(rgba(114, 47, 55, 0.9), rgba(43, 16, 20, 0.9)), url('../img/bodega-bg.jpg') center/cover; */
+}
+
+/* 2. Iconos interactivos */
+.contacto-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fdf2f4; /* Rosa pálido */
+    color: #722F37; /* Rojo Vino */
+    font-size: 1.8rem;
+    border-radius: 50%;
+    transition: all 0.3s ease; /* Animación suave */
+}
+
+/* Al pasar el ratón, el icono se invierte y crece un poquito */
+.contacto-info-box:hover .contacto-icon {
+    background-color: #722F37;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 10px 20px rgba(114, 47, 55, 0.2);
+}
+
+/* 3. Tarjeta del formulario más suave */
+.card-contacto {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+}
+
+/* 4. Personalización de los inputs (cajas de texto) */
+.form-control, .form-select {
+    border: 1px solid #eaeaea;
+    background-color: #fafafa;
+}
+
+/* Cuando haces clic en la caja de texto */
+.form-control:focus, .form-select:focus {
+    border-color: #722F37;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.15); /* Brillo vino suave */
+}
+
+/* Color de la etiqueta flotante al hacer clic */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-select:focus ~ label {
+    color: #722F37;
+    font-weight: bold;
+}

@@ -164,139 +164,52 @@ nav {
 }
 
 
-/* =========================================
-   5. SECCIÓN HERO (PORTADA)
-   ========================================= */
-.inicio {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/paisajeinicio.jpg');
-    background-size: cover;          
-    background-position: center;     
-    background-repeat: no-repeat;
-    width: 100%;
-    height: 70vh; 
-    color: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+
+
+.imagen{
+    height: 10vh;
+    opacity: 0.6;
+    position:absolute;
+    right: 10px;
+}
+.contenedor-imagen{
+    position:relative;
+}
+.text-secondary{
+    text-align: justify;
 }
 
-/* Botón "Cristal" del Banner */
-.inicio .btn-vino {
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid white;
-    color: white;
-    letter-spacing: 3px;
-    font-size: 0.9rem;
-    padding: 12px 40px;
-    border-radius: 0px; 
-    text-transform: uppercase;
-    font-weight: 300;
-    transition: all 0.4s ease;
+.text-vino{
+    font-variant: small-caps;
+    text-shadow: 0.2vh 0.3vh 0.3vh #722F37;
 }
 
-.inicio .btn-vino:hover {
-    background-color: white;     
-    color: #722F37;              
-    letter-spacing: 5px;         
-    border-color: white;
+.lead{
+    max-width: 75vw;
 }
 
 
-/* =========================================
-   6. SECCIÓN PRODUCTOS DESTACADOS
-   ========================================= */
-
-/* Utilidad para espaciado de letras en subtítulos */
-.fw-bold-spacing {
-    letter-spacing: 2px;
+.seccion-iconos{
+    border-top: 1px solid rgba(114, 47, 55, 0.4);
+    background-color: rgb(243, 243, 243);
 }
 
-.text-vino {
-    color: #722F37 !important;
-}
- /* Numerito del icono del carrito de la compra */
-.text-vino-carrito {
-    color: #722F37 !important;
-    font-size: 0.9rem;
-}
-
-/* Tarjeta de Producto (<article>) */
-.product-card {
-    background: transparent;
-    transition: transform 0.3s ease;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-}
-
-.img-wrapper {
-    overflow: hidden;
-    height: 300px;    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff; 
-}
-
-.img-wrapper img {
-    max-height: 100%;
-    width: auto;
-    object-fit: contain; 
-    transition: transform 0.5s ease;
-}
-
-.product-card:hover .img-wrapper img {
-    transform: scale(1.05);
-}
-
-.btn-outline-vino {
-    color: #722F37;
-    border: 1px solid #722F37;
-    background-color: transparent;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-vino:hover {
-    background-color: #722F37;
-    color: white;
-}
-
-
-/* =========================================
-   7. SECCIÓN PROMO EXPERIENCIAS
-   ========================================= */
-
-.section-promo {
-    background-color: rgb(243, 243, 243);   
-
-}
-
-.text-promo {
-    font-size: 1.1rem;
-}
-
-.promo-img-container img {
-    border-radius: 0px;
-}
-
-.link-experiencia {
-    letter-spacing: 1px;
-    border-bottom: 1px solid transparent; 
-    transition: all 0.3s ease;
-    padding-bottom: 2px;
-}
-
-.link-experiencia:hover {
-    border-bottom: 1px solid #722F37; 
-    opacity: 0.8;
-}
+.icon-box {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fdf2f4; /* Un rosa/vino muy muy pálido */
+            color: #722F37;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
 
 
 
-/* =========================================
-   7. FOOTER
-   ========================================= */
+
+/* FOOTER  */
 
 .footer-riverview {
     background-color: rgb(243, 243, 243);
