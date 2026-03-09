@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </header>
 
-    <main style="margin-top: 100px;">
+    <main>
         <section class="hero-contacto text-center mb-5 shadow-sm">
             <div class="container">
                 <h1 class="display-3 fw-light mb-3">Estamos aquí para ti</h1>
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="contacto-icon shadow-sm me-4"><i class="bi bi-envelope"></i></div>
                             <div>
                                 <h5 class="h6 fw-bold text-dark mb-1">Escríbenos</h5>
-                                <p class="text-muted mb-0">info@vinosriverview.com</p>
+                                <p class="text-muted mb-0">vinosriverview@outlook.com</p>
                             </div>
                         </div>
                     </div>
@@ -307,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
                     <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Contacto</h5>
                     <p><i class="bi bi-house-door-fill me-2"></i> Calle del Vino, 12, La Rioja</p>
-                    <p><i class="bi bi-envelope-fill me-2"></i> info@vinosriverview.com</p>
+                    <p><i class="bi bi-envelope-fill me-2"></i>vinosriverview@outlook.com</p>
                 </div>
             </div>
             <hr class="mb-4">

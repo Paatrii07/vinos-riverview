@@ -196,13 +196,18 @@ object-fit: contain;
 }
 
 
+/* AJUSTE PARA CUADRAR A LA MISMA ALTURA EL RESUMEN DEL TOTAL */
+@media (min-width: 992px) {
+    .columna-resumen-ajuste {
+        margin-top: 8px !important; 
+        position: relative;
+        z-index: 10;
+    }
+}
 
 
 
-
-
-
-
+/* FOOTER */
 .footer-riverview {
     background-color: rgb(243, 243, 243);
     box-shadow: 0 0vh 1.1vh #722F37 !important; 

@@ -1,6 +1,7 @@
 <?php
 // 1. Iniciar sesión 
 session_start();
+require_once '../config.php';
 
 // Calcular total de productos para la burbuja roja
 $total_cesta = 0;
@@ -8,13 +9,10 @@ if (isset($_SESSION['carrito'])) {
     $total_cesta = array_sum($_SESSION['carrito']);
 }
 
-// 2. Conexión a Base de Datos
-$url = 'mysql:dbname=vinos_riverview;host=localhost';
-$user = 'root';
-$pass = "";
+
 
 try {
-    $conexion = new PDO($url, $user, $pass);
+    $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
     echo "Error de conexión: " . $e->getMessage();
@@ -273,10 +271,10 @@ if (!empty($_SESSION['carrito'])) {
             </div>
         
         <?php else: ?>
-            <div class="row">
+            <div class="row g-4 align-items-stretch">
                 
                 <div class="col-lg-8">
-                    <div class="card border-0 shadow-sm mb-4">
+                    <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
@@ -350,10 +348,10 @@ if (!empty($_SESSION['carrito'])) {
                     </div>
                 </div>
 
-                <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-vino text-white text-center py-3">
-                            <h5 class="mb-0 fw-light">Resumen del Pedido</h5>
+                <div class="col-lg-4 columna-resumen-ajuste">
+                    <div class="card border-0">
+                        <div class="card-header text-center py-3">
+                            <h5 class="mb-0">Resumen del Pedido</h5>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush mb-3">
