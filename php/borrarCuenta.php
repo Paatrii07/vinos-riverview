@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once '../config.php';
 
 // 1. Seguridad: Si no está logueado, fuera
 if (!isset($_SESSION['usuario_id'])) {
@@ -7,15 +8,10 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-// 2. Conexión BBDD
-$url = 'mysql:dbname=vinos_riverview;host=localhost';
-$user = 'root';
-$pass_db = ""; 
 
 try {
-    $conexion = new PDO($url, $user, $pass_db);
+    $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     // 3. Borrar el usuario
     // Usamos bindParam para máxima seguridad
     $id_usuario = $_SESSION['usuario_id'];
@@ -36,6 +32,8 @@ try {
     }
 
 } catch(PDOException $e) {
-    echo "Error de conexión: " . $e->getMessage();
+    error_log("Error de conexión: " .$e->getMessage()); 
+    echo "Error de conexión. Inténtalo más tarde.";
+    exit; // Añadimos exit para que no intente ejecutar el resto si falla la conexión
 }
 ?>

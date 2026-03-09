@@ -1,11 +1,13 @@
+
+
+# Ignorar el archivo de contraseñas
+config.php
+
+# Ignorar archivos temporales y basura
 .DS_Store
 Thumbs.db
-
 *.log
-*.sql
-*.sqlite
 
-/node_modules
-/vendor
-
+# Ignorar librerías externas (si usas composer)
+/vendor/
 

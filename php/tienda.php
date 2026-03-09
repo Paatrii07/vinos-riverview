@@ -1,7 +1,7 @@
 <?php
 // 1. INICIAR SESIÓN 
 session_start();
-
+require_once '../config.php';
 
 // Calcular total de productos para la burbuja roja
 $total_cesta = 0;
@@ -9,16 +9,14 @@ if (isset($_SESSION['carrito'])) {
     $total_cesta = array_sum($_SESSION['carrito']);
 }
 
-// CONEXIÓN
-$url_db = 'mysql:dbname=vinos_riverview;host=localhost';
-$user_db = 'root';
-$pass_db = "";
 
 try {
-    $conexion = new PDO($url_db, $user_db, $pass_db);
+    // Usamos las constantes que definimos en config.php
+    $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
-    die("Error de conexión: " . $e->getMessage());
+    error_log("Error de conexión: " . $e->getMessage()); // Log secreto
+    die("Error de conexión. Inténtelo más tarde."); // Mensaje genérico para el usuario
 }
 
 // 2. LÓGICA DE FILTRADO

@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once '../config.php';
 
 $total_cesta = 0;
 if (isset($_SESSION['carrito'])) {
@@ -24,19 +25,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombre = htmlspecialchars(strip_tags($_POST['nombre']));
     $email_usuario = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $asunto = htmlspecialchars(strip_tags($_POST['asunto']));
-    $mensaje_usuario = htmlspecialchars(strip_tags($_POST['mensaje']));
-
-    $correo_tienda = "vinosriverview@outlook.com"; 
+    $mensaje_usuario = htmlspecialchars(strip_tags($_POST['mensaje'])); 
     $mail = new PHPMailer(true);
 
     try {
-        // --- CONFIGURACIÓN MAILTRAP ---
+        // --- CONFIGURACIÓN MAILTRAP USANDO LAS CONSTANTES DE CONFIG.PHP ---
         $mail->isSMTP();
-        $mail->Host       = 'sandbox.smtp.mailtrap.io';
+        $mail->Host       = SMTP_HOST;
         $mail->SMTPAuth   = true;
-        $mail->Port       = 2525; 
-        $mail->Username   = 'cdcdb3b301e531'; 
-        $mail->Password   = '73aff57fb83ad2'; 
+        $mail->Port       = SMTP_PORT; 
+        $mail->Username   = SMTP_USER;
+        $mail->Password   = SMTP_PASS;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->CharSet    = 'UTF-8';
         $mail->SMTPOptions = array(
@@ -48,10 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
 
         // --- UN SOLO ENVÍO PARA TODOS (Evita error de "Too many emails") ---
-        $mail->setFrom($correo_tienda, 'Vinos Riverview');
+        $mail->setFrom(EMAIL_TIENDA, 'Vinos Riverview');
         
         // Destinatario principal (Tú)
-        $mail->addAddress($correo_tienda, 'Administrador'); 
+        $mail->addAddress(EMAIL_TIENDA, 'Administrador'); 
         
         // Cliente en Copia Oculta (BCC)
         $mail->addBCC($email_usuario, $nombre); 

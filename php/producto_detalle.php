@@ -1,6 +1,7 @@
 <?php
 // 1. INICIAR SESIÓN Y 
 session_start();
+require_once '../config.php';
 
 // Calcular total de productos para la burbuja roja
 $total_cesta = 0;
@@ -8,16 +9,14 @@ if (isset($_SESSION['carrito'])) {
     $total_cesta = array_sum($_SESSION['carrito']);
 }
 
-// CONEXIÓN
-$url_db = 'mysql:dbname=vinos_riverview;host=localhost';
-$user_db = 'root';
-$pass_db = "";
+
 
 // Variable para controlar si encontramos el producto
 $producto = null;
 
 try {
-    $conexion = new PDO($url_db, $user_db, $pass_db);
+    // Usamos las constantes de config.php (sin el símbolo $)
+    $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // 2. VALIDAR ID Y HACER LA CONSULTA COMPLETA
@@ -51,7 +50,9 @@ try {
     }
 
 } catch(PDOException $e) {
-    die("Error: " . $e->getMessage());
+    error_log("Error de conexión: " .$e->getMessage()); 
+    echo "Error de conexión. Inténtalo más tarde.";
+    exit; // Añadimos exit para que no intente ejecutar el resto si falla la conexión
 }
 ?>
 

@@ -1,29 +1,29 @@
 <?php
+
+session_start(); // Iniciamos la sesión para que PHP sepa quien es el usuario y que tiene en su carrito.
 // =======================================================
 // 1. CONEXIÓN A LA BASE DE DATOS (PDO)
 // =======================================================
-
+require_once '../config.php';
 // Calcular total de productos para la burbuja roja
 $total_cesta = 0;
 if (isset($_SESSION['carrito'])) {
     $total_cesta = array_sum($_SESSION['carrito']);
 }
-// Definimos las credenciales de la base de datos
-$url = 'mysql:dbname=vinos_riverview;host=localhost';
-$user = 'root';
-$pass_db = ""; 
+
 
 try {
     // Intentamos conectar usando PDO (PHP Data Objects)
     // PDO es más seguro y permite usar sentencias preparadas
-    $conexion = new PDO($url, $user, $pass_db);
-    
+    $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
     // Configuramos PDO para que nos avise si hay errores (Excepciones)
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 } catch(PDOException $e) {
+    error_log("Error de conexión: " .$e->getMessage()); // Log secreto
     // Si falla la conexión, capturamos el error y paramos todo para no mostrar datos sensibles
-    echo "Fallo la conexión: " . $e->getMessage();
-    exit();
+    echo "Error de conexión. Inténtalo más tarde.";
+    exit; // Para que no intente ejecutar el resto si falla la conexion.
 }
 
 // Variables para guardar mensajes de feedback al usuario

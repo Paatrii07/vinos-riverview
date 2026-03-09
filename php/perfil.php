@@ -1,6 +1,7 @@
 <?php
 // 1. INICIAR SESIÓN Y SEGURIDAD
 session_start();
+require_once '../config.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: ./login.php");
@@ -13,17 +14,16 @@ if (isset($_SESSION['carrito'])) {
     $total_cesta = array_sum($_SESSION['carrito']);
 }
 
-// 2. CONEXIÓN BBDD
-$url = 'mysql:dbname=vinos_riverview;host=localhost';
-$user = 'root';
-$pass = "";
 
 try {
-    $conexion = new PDO($url, $user, $pass);
+    // Usamos las constantes de config.php (sin el símbolo $)
+    $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 } catch(PDOException $e) {
-    echo "Fallo la conexión: " . $e->getMessage();
-    exit();
+    error_log("Error de conexión: " .$e->getMessage()); 
+    echo "Error de conexión. Inténtalo más tarde.";
+    exit; // Añadimos exit para que no intente ejecutar el resto si falla la conexión
 }
 
 $mensaje = "";
@@ -326,7 +326,7 @@ $datos_usuario = $stmt_leer->fetch(PDO::FETCH_ASSOC);
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
                 <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Contacto</h5>
                 <p><i class="bi bi-house-door-fill me-2"></i> Calle del Vino, 12, La Rioja</p>
-                <p><i class="bi bi-envelope-fill me-2"></i> info@vinosriverview.com</p>
+                <p><i class="bi bi-envelope-fill me-2"></i> vinosriverview@outlook.com</p>
                 <p><i class="bi bi-telephone-fill me-2"></i> +34 912 345 678</p>
             </div>
             
