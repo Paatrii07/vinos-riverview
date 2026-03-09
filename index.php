@@ -2,6 +2,7 @@
 
 // 1. Iniciar sesión
 session_start();
+require_once './config.php';
 
 // Calcular total de productos para el recuento de productos en el icono del carrito
 $total_cesta = 0;
@@ -9,17 +10,22 @@ if (isset($_SESSION['carrito'])) {
     $total_cesta = array_sum($_SESSION['carrito']);
 }
 
-// 2. Conexión a Base de Datos
-$url = 'mysql:dbname=vinos_riverview;host=127.0.0.1';
-$user = 'root';
-$pass = "";
+
 
 try {
-    $conexion = new PDO($url, $user, $pass);
+    // Intentamos conectar usando PDO (PHP Data Objects)
+    // PDO es más seguro y permite usar sentencias preparadas
+    $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
+    // Configuramos PDO para que nos avise si hay errores (Excepciones)
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 } catch(PDOException $e) {
-    echo "Fallo la conexión: " . $e->getMessage();
+    error_log("Error de conexión: " .$e->getMessage()); // Log secreto
+    // Si falla la conexión, capturamos el error y paramos todo para no mostrar datos sensibles
+    echo "Error de conexión. Inténtalo más tarde.";
+    exit; // Para que no intente ejecutar el resto si falla la conexion.
 }
+
 
 // 3. Consulta de productos para los destacados (Limitado a 3)
 $sql = "SELECT * FROM producto LIMIT :limite";

@@ -21,13 +21,19 @@ if (isset($_SESSION['carrito'])) {
 
 
 try {
-    // Usamos las constantes que definimos en config.php
+    // Intentamos conectar usando PDO (PHP Data Objects)
+    // PDO es más seguro y permite usar sentencias preparadas
     $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
+    // Configuramos PDO para que nos avise si hay errores (Excepciones)
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 } catch(PDOException $e) {
-    error_log("Error de conexión: " . $e->getMessage()); // Log secreto
-    die("Error de conexión. Inténtelo más tarde."); // Mensaje genérico para el usuario
+    error_log("Error de conexión: " .$e->getMessage()); // Log secreto
+    // Si falla la conexión, capturamos el error y paramos todo para no mostrar datos sensibles
+    echo "Error de conexión. Inténtalo más tarde.";
+    exit; // Para que no intente ejecutar el resto si falla la conexion.
 }
+
 
 $mensaje_error = "";
 
