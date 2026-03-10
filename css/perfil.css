@@ -4,6 +4,17 @@ nav{
     box-shadow: 0 0vh 1.1vh #722F37 !important;
 }
 
+/* Esto empuja absolutamente TODO el contenido hacia abajo */
+body {
+    padding-top: 160px !important;
+}
+
+/* Y para que la alerta no esté pegada al título */
+.espaciado-alertas {
+    margin-bottom: 20px !important;
+    display: block !important;
+}
+
 /* Cuando lo pulsas (Focus) o está abierto */
 .navbar-toggler:focus,
 .navbar-toggler:active {

@@ -151,7 +151,7 @@ $sentencia->execute();
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Experiencias / Catas</a>
+                                <a class="nav-link" href="./php/experiencias.php">Experiencias / Catas</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./php/nosotros.php">Sobre Nosotros</a>
