@@ -9,6 +9,12 @@ if (isset($_SESSION['carrito'])) {
     $total_cesta = array_sum($_SESSION['carrito']);
 }
 
+if (!isset($_SESSION['usuario_id'])) {
+    // Guardamos la página actual para volver luego
+    header("Location: login.php?return_to=experiencias.php");
+    exit();
+}
+
 
 try {
     // Usamos las constantes que definimos en config.php
@@ -174,86 +180,106 @@ try {
     $experiencias = []; // Si falla, evitamos que la página se rompa
 }
 ?>
-
-<div class="row g-4">
-    <?php if (empty($experiencias)): ?>
-        <div class="col-12 text-center">
-            <p class="text-muted">Próximamente nuevas experiencias disponibles.</p>
+<div class="container mb-5">
+    <div class="row text-center">
+        <div class="col-12">
+            <h2 class="fw-light text-vino display-5">Nuestras Experiencias</h2>
+            <hr class="mx-auto" style="width: 50px; border-top: 2px solid #722F37;">
         </div>
-    <?php else: ?>
-        <?php foreach ($experiencias as $exp): ?>
-            <div class="py-4 col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100 card-experiencia">
-                    <div class="position-relative">
-                        <img src="../img/<?php echo $exp['imagen']; ?>" 
-                             onerror="this.src='../img/cata-fondo.jpg'" 
-                             class="card-img-top" 
-                             alt="<?php echo htmlspecialchars($exp['nombre_evento']); ?>">
-                        
-                        <?php if($exp['id_visita'] == 1): ?>
-                            <span class="badge bg-vino position-absolute top-0 end-0 m-3">Más Popular</span>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <div class="card-body p-4 d-flex flex-column">
-                        <h5 class="card-title fw-bold text-vino"><?php echo htmlspecialchars($exp['nombre_evento']); ?></h5>
-                        
-                        <p class="text-muted small mb-2">
-                            <i class="bi bi-calendar-event me-1"></i> <?php echo date('d/m/Y', strtotime($exp['fecha'])); ?> | 
-                            <i class="bi bi-clock me-1"></i> <?php echo $exp['hora']; ?>
-                        </p>
-                        
-                        <p class="card-text flex-grow-1">
-                            <?php echo htmlspecialchars($exp['descripcion']); ?>
-                        </p>
-                        
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <span class="fs-4 fw-bold text-dark">
-                                <?php echo number_format($exp['precio'], 2); ?>€ 
-                                <small class="fs-6 text-muted">/ pers.</small>
-                            </span>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <?php if (empty($experiencias)): ?>
+            <div class="col-12 text-center">
+                <p class="text-muted">Próximamente nuevas experiencias disponibles.</p>
+            </div>
+        <?php else: ?>
+            <?php foreach ($experiencias as $exp): ?>
+                <div class="col-md-6 col-lg-4 d-flex justify-content-center">
+                    <div class="card border-1 shadow-sm card-experiencia px-0 w-100">
+                        <div class="position-relative">
+                            <img src="../img/<?php echo $exp['imagen']; ?>" 
+                                 onerror="this.src='../img/cata-fondo.jpg'" 
+                                 class="card-img-top" 
+                                 alt="<?php echo htmlspecialchars($exp['nombre_evento']); ?>">
                             
-                            <button type="button" 
-                                    class="btn btn-outline-vino" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#modalReserva" 
-                                    data-id="<?php echo $exp['id_visita']; ?>" 
-                                    data-nombre="<?php echo htmlspecialchars($exp['nombre_evento']); ?>">
-                                Reservar
-                            </button>
+                            <?php if($exp['id_visita'] == 1): ?>
+                                <span class="badge bg-vino position-absolute top-0 end-0 m-3">Más Popular</span>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h5 class="card-title fw-bold text-vino"><?php echo htmlspecialchars($exp['nombre_evento']); ?></h5>
+                            
+                            <p class="text-muted small mb-2">
+                                <i class="bi bi-calendar-event me-1"></i> <?php echo date('d/m/Y', strtotime($exp['fecha'])); ?> | 
+                                <i class="bi bi-clock me-1"></i> <?php echo $exp['hora']; ?>
+                            </p>
+                            
+                            <p class="card-text flex-grow-1">
+                                <?php echo htmlspecialchars($exp['descripcion']); ?>
+                            </p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <span class="fs-4 fw-bold text-dark">
+                                    <?php echo number_format($exp['precio'], 2); ?>€ 
+                                    <small class="fs-6 text-muted">/ pers.</small>
+                                </span>
+                                
+                                <button type="button" 
+                                        class="btn btn-outline-vino" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalReserva" 
+                                        data-id="<?php echo $exp['id_visita']; ?>" 
+                                        data-nombre="<?php echo htmlspecialchars($exp['nombre_evento']); ?>">
+                                    Reservar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 </div>
 
 <div class="modal fade" id="modalReserva" tabindex="-1" aria-labelledby="modalReservaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="modalReservaLabel">Confirmar Asistencia</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header border-bottom-vino">
+                <h5 class="modal-title fw-light text-uppercase tracking-wider" id="modalReservaLabel" style="letter-spacing: 2px;">
+                    Confirmar Experiencia
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <form action="reservar_proceso.php" method="POST">
                 <div class="modal-body p-4">
-                    <h4 id="nombreCataModal" class="text-vino fw-bold mb-3"></h4>
+                    <h4 id="nombreCataModal" class="text-vino fw-bold mb-4"></h4>
                     
                     <input type="hidden" name="id_visita" id="idVisitaModal">
                     
-                    <div class="mb-3">
-                        <label for="num_personas" class="form-label fw-bold">¿Cuántas personas vendréis?</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="bi bi-people"></i></span>
-                            <input type="number" name="num_personas" id="num_personas" class="form-control" value="1" min="1" max="10" required>
+                    <div class="mb-4">
+                        <label for="num_personas" class="form-label text-muted small text-uppercase fw-bold">Número de asistentes</label>
+                        <div class="input-group custom-input-group">
+                            <span class="input-group-text bg-light border-end-0 text-vino">
+                                <i class="bi bi-people-fill"></i>
+                            </span>
+                            <input type="number" name="num_personas" id="num_personas" 
+                                   class="form-control border-start-0 bg-light focus-vino" 
+                                   value="1" min="1" max="10" required>
                         </div>
-                        <p class="form-text mt-2 small text-muted">Máximo 10 personas por reserva online.</p>
+                        <div class="form-text mt-2 small text-muted italic">
+                            * Máximo 10 personas por reserva online. Para grupos mayores, contáctenos.
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-vino px-4 text-white">Confirmar Reserva</button>
+
+                <div class="modal-footer border-0 pb-4 justify-content-center">
+                    <button type="button" class="btn btn-link text-muted text-decoration-none px-4" data-bs-dismiss="modal">Volver</button>
+                    <button type="submit" class="btn btn-vino px-5 py-2 text-uppercase fw-bold" style="letter-spacing: 1px;">
+                        Confirmar Reserva
+                    </button>
                 </div>
             </form>
         </div>
@@ -355,13 +381,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="text-center text-md-end">
                     <ul class="list-unstyled list-inline">
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
+                            <a href="http://www.facebook.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
+                            <a href="http://www.x.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
+                            <a href="http://www.instagram.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
                         </li>
                     </ul>
                 </div>

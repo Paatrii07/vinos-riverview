@@ -124,7 +124,7 @@ if (isset($_SESSION['carrito'])) {
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="./catas.php">Experiencias / Catas</a>
+                                <a class="nav-link" href="./experiencias.php">Experiencias / Catas</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./nosotros.php">Sobre Nosotros</a>

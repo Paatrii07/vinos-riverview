@@ -317,7 +317,7 @@ $sentencia->execute();
                         <p class="text-muted mb-4 fw-light text-promo">
                             No solo vendemos vino, creamos recuerdos. Ven a visitar nuestros viñedos al atardecer y descubre el proceso artesanal detrás de cada botella.
                         </p>
-                        <a href="#" class="link-experiencia text-decoration-none text-uppercase small fw-bold text-vino">
+                        <a href="./php/experiencias.php" class="link-experiencia text-decoration-none text-uppercase small fw-bold text-vino">
                             Reservar visita guiada <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>

@@ -85,6 +85,7 @@ nav {
 
 
 /* --- BOTÓN HAMBURGUESA --- */
+/* Cuando lo pulsas (Focus) o está abierto */
 .navbar-toggler:focus,
 .navbar-toggler:active {
     text-decoration: none;

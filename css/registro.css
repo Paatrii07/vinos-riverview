@@ -1,4 +1,8 @@
-/* BUSCAR PRODUCTOS EN NAVEGADOR*/
+/* =========================================
+   1. ESTILOS GENERALES Y FORMULARIOS
+   ========================================= */
+   
+   /* BUSCAR PRODUCTOS EN NAVEGADOR*/
 
 .btn-vino {
     color: #722F37;              /* Color del texto y borde */
@@ -19,19 +23,189 @@
     box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25); /* El brillo suave */
 }
 
-/* --- PERSONALIZAR EL BOTÓN HAMBURGUESA --- */
+/* Buscador desplegable superior (ajuste específico) */
+.buscador-superior input.form-control {
+    box-shadow: none; /* Quitamos sombra extra en la barra superior */
+}
 
+nav{
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+}
+
+
+
+/* =========================================
+    2. CABECERA Y NAVEGACIÓN (HEADER)
+   ========================================= */
+
+
+/* BARRA DE BÚSQUEDA */
+
+/* 1. La caja de texto (Input) */
+.input-busqueda {
+    border: 2px solid #722F37;     /* Borde color vino un poco más grueso */
+    border-radius: 8px;            /* Bordes redondeados */
+    padding: 10px 15px;            /* Espacio interior cómodo */
+    color: #444;
+    max-width: 500px;              /* Que no sea infinita en pantallas grandes */
+    box-shadow: none !important;   /* Quitamos sombras extrañas */
+}
+
+/* Efecto al escribir en la caja */
+.input-busqueda:focus {
+    border-color: #722F37;         /* Mantiene el color vino */
+    background-color: #fffafa;     /* Un fondo rosado casi imperceptible */
+}
+
+/* 2. El botón cuadrado con la lupa */
+.btn-lupa {
+    border: 2px solid #722F37;     /* Borde color vino igual que el input */
+    border-radius: 8px;            /* Bordes redondeados iguales */
+    background-color: white;       /* Fondo blanco */
+    color: #722F37;                /* Icono color vino */
+    padding: 10px 15px;            /* Tamaño cuadrado */
+    transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el ratón por la lupa */
+.btn-lupa:hover {
+    background-color: #722F37;     /* Se rellena de vino */
+    color: white;                  /* La lupa se vuelve blanca */
+    transform: translateY(-2px);   /* Pequeño saltito hacia arriba */
+}
+
+/* Línea sombreada separadora */
+nav {
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+}
+
+
+
+/* =========================================
+    2. CABECERA Y NAVEGACIÓN (HEADER)
+   ========================================= */
+
+
+/* BARRA DE BÚSQUEDA */
+
+/* 1. La caja de texto (Input) */
+.input-busqueda {
+    border: 2px solid #722F37;     /* Borde color vino un poco más grueso */
+    border-radius: 8px;            /* Bordes redondeados */
+    padding: 10px 15px;            /* Espacio interior cómodo */
+    color: #444;
+    max-width: 500px;              /* Que no sea infinita en pantallas grandes */
+    box-shadow: none !important;   /* Quitamos sombras extrañas */
+}
+
+/* Efecto al escribir en la caja */
+.input-busqueda:focus {
+    border-color: #722F37;         /* Mantiene el color vino */
+    background-color: #fffafa;     /* Un fondo rosado casi imperceptible */
+}
+
+/* 2. El botón cuadrado con la lupa */
+.btn-lupa {
+    border: 2px solid #722F37;     /* Borde color vino igual que el input */
+    border-radius: 8px;            /* Bordes redondeados iguales */
+    background-color: white;       /* Fondo blanco */
+    color: #722F37;                /* Icono color vino */
+    padding: 10px 15px;            /* Tamaño cuadrado */
+    transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el ratón por la lupa */
+.btn-lupa:hover {
+    background-color: #722F37;     /* Se rellena de vino */
+    color: white;                  /* La lupa se vuelve blanca */
+    transform: translateY(-2px);   /* Pequeño saltito hacia arriba */
+}
+
+/* Línea sombreada separadora */
+nav {
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+}
+
+
+
+
+/* --- PERSONALIZAR EL BOTÓN HAMBURGUESA --- */
 /* Cuando lo pulsas (Focus) o está abierto */
 .navbar-toggler:focus,
 .navbar-toggler:active {
     text-decoration: none;
     outline: 0;
-    
-    /* Cambiamos el borde gris por borde VINO */
     border-color: #722F37;
-    
-    /* El "brillo" que sale alrededor. */
     box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
+}
+/* --- ICONOS DE LA CABECERA (NUEVO: Clases para tamaño y usuario) --- */
+.icon-nav {
+    font-size: 1.5rem; /* Tamaño unificado para lupa, carrito y usuario */
+    transition: all 0.3s ease;
+}
+
+.icon-nav-user {
+    font-size: 1.5rem;
+    color: #722F37; /* El icono de usuario logueado siempre en vino */
+    transition: all 0.3s ease;
+}
+
+/* Efectos Hover en los iconos */
+.navbar a:hover .icon-nav,
+.navbar a:hover .icon-nav-user {
+    color: #722F37 !important;
+    filter: drop-shadow(0px 3px 2px rgba(114, 47, 55, 0.4));
+    transform: scale(1.15); 
+}
+
+/* --- ENLACES DEL MENÚ PRINCIPAL --- */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: #722F37;           
+}
+
+.navbar-nav .nav-link.active {
+    color: #722F37 !important; 
+    font-weight: bold;        
+} 
+
+/* =========================================
+   3. MENÚ LATERAL (OFFCANVAS - TIENDA)
+   ========================================= */
+
+#menu-tienda .nav-link {
+    font-size: 0.95rem;     /* Un poco más pequeño que las categorías principales */
+    color: #666;            /* Gris suave para diferenciarlo */
+    transition: all 0.2s ease;
+}
+
+#menu-tienda .nav-link:hover {
+    color: #722F37;         /* Color Vino */
+    padding-left: 10px;     /* Efecto de desplazamiento a la derecha */
+    font-weight: 500;
+    background-color: transparent; /* Evitamos fondos no deseados */
+}
+
+/* Línea vertical gris del submenú para dar estructura de árbol */
+#menu-tienda ul {
+    border-left: 2px solid #eee !important;
+}
+
+
+
+/* =========================================
+   4. DROPDOWN DE USUARIO (SOLO PARA LOGIN)
+   ========================================= */
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #f8e8e8; 
+    color: #722F37;            
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #722F37; 
+    color: white;              
 }
 
 /* --- ICONOS DE LA CABECERA (Login, Carrito y Buscar) --- */
@@ -57,7 +231,11 @@
     transform: scale(1.15); 
 }
 
-
+/* Numerito del carrito de la compra */
+.text-vino-carrito {
+    color: #722F37 !important;
+    font-size: 0.9rem;
+}
 
 
 /* --- ESTILOS DEL MENÚ NAVEGACIÓN --- */
@@ -135,18 +313,20 @@ body {
 
 
 
-/* --- FOOTER (PIE DE PÁGINA) --- */
+/* =========================================
+   7. FOOTER
+   ========================================= */
 
 .footer-riverview {
-    background-color: #F9F7F2;      /* Blanco Crema / Hueso (Muy suave) */
-    border-top: 1px solid #e0e0e0;  /* Línea superior sutil (ya no gruesa) */
-    color: #5a5a5a;                 /* Gris medio para el texto (no negro) */
-    
+    background-color: rgb(243, 243, 243);
+    box-shadow: 0 0vh 1.1vh #722F37 !important; 
+    border-top: 1px solid #e0e0e0;  
+    color: #5a5a5a;                 
     font-weight: 300;               
     font-size: 0.9rem;             
     letter-spacing: 0.5px;          
 }
-/* Títulos (H5): Aún más elegantes */
+
 .footer-riverview h5 {
     font-weight: 400 !important;   
     letter-spacing: 1px;           
@@ -156,26 +336,33 @@ body {
     margin-bottom: 1.2rem;
 }
 
-/* Enlaces del footer */
 .footer-link {
-text-decoration: none;         
+    text-decoration: none;         
     color: #5a5a5a;                
     transition: all 0.3s ease;
 }
 
 .footer-link:hover {
     color: #722F37 !important;     
-    background-color: transparent; /* Quitamos fondos raros */
+    background-color: transparent; 
     padding-left: 5px;             
 }
 
-/* Iconos de redes sociales */
-.footer-riverview .bi {
-    color: #722F37;                /* Iconos color vino directamente */
-    transition: transform 0.3s ease;
+/* Iconos redes sociales */
+.btn-floating {
+    font-size: 23px;
+    color: #722F37; /* Color inicial vino */
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+    display: inline-block; /* Para que el transform funcione bien */
 }
 
-.footer-riverview .bi:hover {
-    color: #722F37;                /* Iconos color vino directamente */
-    transition: transform 0.3s ease;
+.btn-floating:hover {
+    transform: scale(1.2); /* Efecto zoom */
 }
+
+.rrss{
+font-size: 23px;
+}
+
+

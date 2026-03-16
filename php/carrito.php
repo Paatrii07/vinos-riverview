@@ -368,9 +368,9 @@ if (!empty($_SESSION['carrito'])) {
                             </ul>
                             <aside class="d-grid">
                                 <?php if (isset($_SESSION['usuario_id'])): ?>
-                                    <a href="checkout.php" class="btn btn-vino btn-lg">TRAMITAR PEDIDO</a>
+                                    <a href="finalizar_pedido.php" class="btn btn-vino btn-lg">FINALIZAR COMPRA Y PAGAR</a>
                                 <?php else: ?>
-                                    <a href="./login.php?volver=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" class="btn btn-warning">
+                                    <a href="./login.php?return_to=carrito.php" class="btn btn-warning">
                                         INICIA SESIÓN PARA PAGAR
                                     </a>
                                 <?php endif; ?>

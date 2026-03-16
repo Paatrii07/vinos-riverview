@@ -6,7 +6,7 @@ nav{
 
 /* Esto empuja absolutamente TODO el contenido hacia abajo */
 body {
-    padding-top: 160px !important;
+    padding-top: 20px !important;
 }
 
 /* Y para que la alerta no esté pegada al título */
@@ -83,7 +83,8 @@ body {
     /* El brillo es el color vino (RGB: 114, 47, 55) con 25% de transparencia */
     box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25); 
 } 
- 
+
+
 
 
 
@@ -120,48 +121,52 @@ body {
     color: white;                /* Al pasar ratón: Texto blanco */
 }
 
+/* FOOTER */
 
-
-
-/* --- 4. FOOTER (ESTILO RIVERVIEW) --- */
 .footer-riverview {
-    background-color: #f2f2f1;      
-    border-top: 1px solid #e0e0e0;  /* Línea superior sutil */
-    color: #5a5a5a;                 /* Gris medio para el texto */
+    background-color: rgb(243, 243, 243);
+    box-shadow: 0 0vh 1.1vh #722F37 !important; 
+    border-top: 1px solid #e0e0e0;  
+    color: #5a5a5a;                 
     font-weight: 300;               
     font-size: 0.9rem;             
     letter-spacing: 0.5px;          
 }
 
-/* Títulos del footer */
 .footer-riverview h5 {
     font-weight: 400 !important;   
     letter-spacing: 1px;           
     text-transform: uppercase;     
     font-size: 0.95rem;
-    color: #722F37;                /* Color corporativo */
+    color: #722F37;                
     margin-bottom: 1.2rem;
 }
 
-/* Enlaces del footer */
 .footer-link {
     text-decoration: none;         
-    color: #5a5a5a;                /* Gris elegante */
+    color: #5a5a5a;                
     transition: all 0.3s ease;
 }
 
 .footer-link:hover {
-    color: #722F37 !important;     /* Hover color vino */
+    color: #722F37 !important;     
     background-color: transparent; 
-    padding-left: 5px;             /* Pequeño movimiento a la derecha */
+    padding-left: 5px;             
 }
 
-/* Iconos de redes sociales */
-.footer-riverview .bi {
-    color: #722F37;                /* Iconos color vino */
-    transition: transform 0.3s ease;
+/* Iconos redes sociales */
+.btn-floating {
+    font-size: 23px;
+    color: #722F37; /* Color inicial vino */
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+    display: inline-block; /* Para que el transform funcione bien */
 }
 
-.footer-riverview .bi:hover {
-    transform: translateY(-3px);   /* Efecto de elevación */
+.btn-floating:hover {
+    transform: scale(1.2); /* Efecto zoom */
+}
+
+.rrss{
+font-size: 23px;
 }

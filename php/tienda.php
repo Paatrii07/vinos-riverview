@@ -167,7 +167,7 @@ $stmt->execute();
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Experiencias / Catas</a>
+                                <a class="nav-link" href="./experiencias.php">Experiencias / Catas</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./nosotros.php">Sobre Nosotros</a>

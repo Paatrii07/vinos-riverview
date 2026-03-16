@@ -1,10 +1,42 @@
 <?php
 session_start();
+require_once '../config.php';
 
-// SEGURIDAD
-if (!isset($_SESSION['usuario_id']) || $_SESSION['rol'] != 'administrador') {
+// 1. SEGURIDAD: Solo si es administrador
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
     header("Location: ../index.php");
     exit();
+}
+
+try {
+    $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
+    $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // --- LÓGICA DE BORRADO ---
+    if (isset($_GET['borrar_prod'])) {
+        $id = (int)$_GET['borrar_prod'];
+        $conexion->prepare("DELETE FROM producto WHERE id_producto = ?")->execute([$id]);
+        header("Location: panel.php?msg=borrado");
+        exit();
+    }
+
+    if (isset($_GET['borrar_exp'])) {
+        $id = (int)$_GET['borrar_exp'];
+        $conexion->prepare("DELETE FROM cata WHERE id_visita = ?")->execute([$id]);
+        header("Location: panel.php?msg=borrado");
+        exit();
+    }
+
+    // --- CONSULTAS PARA ESTADÍSTICAS ---
+    $total_ventas = $conexion->query("SELECT SUM(total_calculado) FROM pedido")->fetchColumn() ?: 0;
+    $num_pedidos = $conexion->query("SELECT COUNT(*) FROM pedido")->fetchColumn();
+    $num_usuarios = $conexion->query("SELECT COUNT(*) FROM usuario WHERE rol = 'cliente'")->fetchColumn();
+
+    // --- CONSULTA DE TODOS LOS PRODUCTOS ---
+    $prods = $conexion->query("SELECT * FROM producto")->fetchAll(PDO::FETCH_ASSOC);
+
+} catch(PDOException $e) {
+    die("Error en el panel: " . $e->getMessage());
 }
 ?>
 
@@ -12,118 +44,217 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['rol'] != 'administrador') {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin - Riverview</title>
-    
+    <title>Panel Admin - Vinos Riverview</title>
     <link href="../css/bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="../css/panel.css" rel="stylesheet">
+    <style>
+        .bg-vino-admin { background-color: #640D14; color: white; }
+        .card-stats { border: none; border-radius: 10px }
+        .nav-tabs .nav-link.active { color: #640D14; font-weight: bold; border-bottom: 3px solid #640D14; }
+        .nav-tabs .nav-link { color: #6c757d; }
+    </style>
 </head>
-<body class="d-flex flex-column h-100">
+<body class="bg-light">
 
-    <nav class="admin-header d-flex justify-content-between align-items-center fixed-top">
-        <div class="brand-text fw-light">
-            Admin <strong>Riverview</strong>
-        </div>
-        
-        <div>
-            <span class="me-3 text-muted small d-none d-md-inline">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></span>
-            <a href="../php/logout.php" class="logout-link rounded-0">
-                Cerrar Sesión <i class="bi bi-x-lg ms-1"></i>
-            </a>
-        </div>
-    </nav>
-
-    <div style="margin-top: 70px;"></div>
-
-    <div class="container-fluid main-layout flex-grow-1">
-        <div class="row h-100">
-            
-            <div class="col-md-2 sidebar-menu d-flex flex-column">
-                <ul class="nav flex-column">
-                    <li class="nav-item mb-2">
-                        <a href="panel.php" class="nav-link active">
-                            <i class="bi bi-house-door me-2"></i> Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a href="#" class="nav-link">
-                            <i class="bi bi-bag me-2"></i> Productos
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a href="#" class="nav-link">
-                            <i class="bi bi-cup-straw me-2"></i> Catas
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a href="#" class="nav-link">
-                            <i class="bi bi-receipt me-2"></i> Ventas
-                        </a>
-                    </li>
-                    <li class="nav-item mt-4">
-                        <a href="#" class="nav-link text-muted">
-                            <i class="bi bi-gear me-2"></i> Configuración
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="col-md-10 content-area d-flex flex-column">
-                
-                <div class="mb-5 border-bottom pb-2">
-                    <h3 class="fw-light text-secondary">Resumen del día de hoy:</h3>
-                    <p class="text-vino lead fw-normal"><?php echo date('d \d\e F, Y'); ?></p>
-                </div>
-
-                <div class="row mb-5">
-                    <div class="col-md-4 mb-4">
-                        <div class="card card-counter h-100 p-4">
-                            <h6 class="text-secondary text-uppercase small mb-3">Pedidos Hoy</h6>
-                            <div class="d-flex align-items-baseline">
-                                <h1 class="display-3 fw-bold text-dark mb-0 me-3">3</h1>
-                                <span class="text-warning small"><i class="bi bi-clock"></i> Pendientes</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-5 mb-4">
-                        <div class="card card-counter h-100 p-4">
-                            <h6 class="text-secondary text-uppercase small mb-3">Próxima Cata</h6>
-                            <h4 class="fw-normal text-dark mb-1">Mañana, 11:00H</h4>
-                            <div class="mt-3">
-                                <p class="mb-1 small text-muted">Ocupación: 12/20 plazas</p>
-                                <div class="progress" style="height: 3px;">
-                                    <div class="progress-bar" style="background-color: #722F37; width: 60%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <h5 class="text-muted fw-light mb-3">Accesos Rápidos:</h5>
-                <div class="row mb-auto"> <div class="col-md-3 mb-3">
-                        <button class="btn btn-minimal w-100 p-3 text-start">
-                            [ + ] Añadir nuevo vino
-                        </button>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <button class="btn btn-minimal w-100 p-3 text-start">
-                            [ + ] Añadir nueva cata
-                        </button>
-                    </div>
-                </div>
-
-                <footer class="mt-5 pt-4 text-center">
-                    <hr style="opacity: 0.1; border-color: #722F37;">
-                    <p class="text-muted small mb-0 pb-4">
-                        &copy; 2025 <strong style="color: #722F37;">Vinos Riverview</strong>. 
-                        Todos los derechos reservados.
-                    </p>
-                </footer>
-
-            </div> </div>
+<nav class="navbar bg-vino-admin shadow-sm mb-4">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1 text-white">ADMIN RIVERVIEW</span>
+        <a href="../index.php" class="btn btn-outline-light btn-sm">Ver Web Pública</a>
     </div>
+</nav>
+
+<div class="container">
+    <div class="row mb-4 g-3 text-center">
+        <div class="col-md-4">
+            <div class="card card-stats shadow-sm p-3">
+                <h6 class="text-muted small">VENTAS</h6>
+                <h2 class="fw-bold"><?php echo number_format($total_ventas, 2); ?>€</h2>
+            </div>
+        </div>
+        <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetallePedidos">
+            <div class="card card-stats shadow-sm p-3 border-start border-success border-4">
+                <h6 class="text-muted small">PEDIDOS (Ver todos)</h6>
+                <h2 class="fw-bold"><?php echo $num_pedidos; ?></h2>
+            </div>
+        </div>
+            <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetalleClientes">
+                <div class="card card-stats shadow-sm p-3 border-start border-warning border-4">
+                    <h6 class="text-muted small">CLIENTES (Ver todos)</h6>
+                    <h2 class="fw-bold"><?php echo $num_usuarios; ?></h2>
+                </div>
+            </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0">Inventario de Productos</h5>
+            <a href="./nuevo_producto.php" class="btn btn-success btn-sm">+ Añadir Producto</a>
+        </div>
+
+        <ul class="nav nav-tabs px-4 pt-2" id="adminTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-vinos">Vinos</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-quesos">Quesos</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-embutidos">Embutidos</button>
+            </li>
+        </ul>
+
+        <div class="tab-content p-3">
+            <?php 
+            $cats_info = [1 => 'tab-vinos', 2 => 'tab-quesos', 3 => 'tab-embutidos'];
+            foreach ($cats_info as $id_cat => $tab_id): 
+            ?>
+            <div class="tab-pane fade <?php echo ($id_cat == 1) ? 'show active' : ''; ?>" id="<?php echo $tab_id; ?>">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            foreach($prods as $pr): 
+                                if($pr['id_categoria'] == $id_cat):
+                            ?>
+                            <tr>
+                                <td><img src="../img/<?php echo $pr['imagen_url']; ?>" width="40" class="rounded shadow-sm"></td>
+                                <td><strong><?php echo htmlspecialchars($pr['nombre']); ?></strong></td>
+                                <td><small class="text-muted"><?php echo mb_strimwidth(htmlspecialchars($pr['descripcion']), 0, 50, "..."); ?></small></td>
+                                <td><?php echo number_format($pr['precio_unidad'], 2); ?>€</td>
+                                <td class="text-end">
+                                    <a href="editar_producto.php?id=<?php echo $pr['id_producto']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                    <a href="panel.php?borrar_prod=<?php echo $pr['id_producto']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Borrar producto?')"><i class="bi bi-trash"></i></a>
+                                </td>
+                            </tr>
+                            <?php 
+                                endif;
+                            endforeach; 
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0">Catas y Eventos</h5>
+            <a href="nueva_experiencia.php" class="btn btn-success btn-sm">+ Nueva Experiencia</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Evento</th>
+                        <th>Fecha</th>
+                        <th>Aforo Máx.</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $exps = $conexion->query("SELECT * FROM cata")->fetchAll();
+                    foreach($exps as $ex): ?>
+                    <tr>
+                        <td class="ps-4 fw-bold text-vino"><?php echo htmlspecialchars($ex['nombre_evento']); ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($ex['fecha'])); ?></td>
+                        <td><?php echo $ex['aforo_maximo']; ?> personas</td>
+                        <td class="text-end pe-4">
+                            <a href="editar_experiencia.php?id=<?php echo $ex['id_visita']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="panel.php?borrar_exp=<?php echo $ex['id_visita']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Borrar experiencia?')"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar los datos de clientes -->
+<div class="modal fade" id="modalDetalleClientes" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="bi bi-people me-2"></i>Listado de Clientes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $clientes = $conexion->query("SELECT * FROM usuario WHERE rol = 'cliente'")->fetchAll();
+                        foreach($clientes as $c): ?>
+                        <tr>
+                            <td class="ps-3"><?php echo htmlspecialchars($c['nombre'] . " " . $c['apellidos']); ?></td>
+                            <td><?php echo htmlspecialchars($c['email']); ?></td>
+                            <td><?php echo $c['telefono'] ?: '---'; ?></td>
+                            <td class="small"><?php echo $c['direccion'] ?: 'No definida'; ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar los datos de pedido/ detalle de pedido -->
+ <div class="modal fade" id="modalDetallePedidos" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="bi bi-cart-check me-2"></i>Historial Completo de Pedidos</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">ID</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $todos_pedidos = $conexion->query("SELECT p.*, u.nombre FROM pedido p JOIN usuario u ON p.id_usuario = u.id_usuario ORDER BY p.fecha DESC")->fetchAll();
+                        foreach($todos_pedidos as $tp): ?>
+                        <tr>
+                            <td class="ps-3">#<?php echo $tp['id_pedido']; ?></td>
+                            <td><?php echo htmlspecialchars($tp['nombre']); ?></td>
+                            <td><?php echo date('d/m/Y H:i', strtotime($tp['fecha'])); ?></td>
+                            <td class="fw-bold"><?php echo number_format($tp['total_calculado'], 2); ?>€</td>
+                            <td><span class="badge bg-info text-dark"><?php echo $tp['estado']; ?></span></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="../css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>

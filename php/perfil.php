@@ -68,6 +68,12 @@ $stmt_res = $conexion->prepare($sql_res);
 $stmt_res->execute(['id' => $_SESSION['usuario_id']]);
 $mis_reservas = $stmt_res->fetchAll(PDO::FETCH_ASSOC);
 
+// 5. CONSULTA DE PEDIDOS REALIZADOS
+$sql_pedidos = "SELECT * FROM pedido WHERE id_usuario = :id ORDER BY fecha DESC";
+$stmt_p = $conexion->prepare($sql_pedidos);
+$stmt_p->execute([':id' => $_SESSION['usuario_id']]);
+$mis_pedidos = $stmt_p->fetchAll(PDO::FETCH_ASSOC);
+
 // Calcular total de productos para la burbuja roja
 $total_cesta = (isset($_SESSION['carrito'])) ? array_sum($_SESSION['carrito']) : 0;
 ?>
@@ -163,7 +169,7 @@ $total_cesta = (isset($_SESSION['carrito'])) ? array_sum($_SESSION['carrito']) :
         </nav>
     </header>
 
-    <div class="container perfil-container">
+    <div class=" container perfil-container ">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 
@@ -252,10 +258,48 @@ $total_cesta = (isset($_SESSION['carrito'])) ? array_sum($_SESSION['carrito']) :
                         </div>
                     </div>
 
-                     <div class="tab-pane fade" id="pedidos">
-                        <p class="text-muted">No has realizado pedidos todavía.</p>
-                        <a href="tienda.php" class="btn btn-outline-vino btn-sm">Ir a la tienda</a>
-                    </div>
+                     <div class="tab-pane fade" id="pedidos" role="tabpanel">
+    <div class="card border-0 shadow-sm p-4">
+        <h4 class="mb-4 fw-light text-vino">Historial de Pedidos</h4>
+        
+        <?php if (count($mis_pedidos) > 0): ?>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nº Pedido</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Método Pago</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($mis_pedidos as $ped): ?>
+                            <tr>
+                                <td><span class="fw-bold text-vino">#<?php echo $ped['id_pedido']; ?></span></td>
+                                <td><?php echo date('d/m/Y', strtotime($ped['fecha'])); ?></td>
+                                <td class="fw-bold"><?php echo number_format($ped['total_calculado'], 2, ',', '.'); ?>€</td>
+                                <td>
+                                    <span class="badge rounded-pill bg-success-subtle text-success border border-success px-3">
+                                        <?php echo htmlspecialchars($ped['estado']); ?>
+                                    </span>
+                                </td>
+                                <td class="small text-muted"><?php echo htmlspecialchars($ped['forma_pago']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <div class="text-center py-5">
+                <i class="bi bi-cart-x display-1 text-muted opacity-25"></i>
+                <p class="mt-3 text-muted">Aún no has realizado ninguna compra.</p>
+                <a href="tienda.php" class="btn btn-vino btn-sm mt-2">Ir a la tienda</a>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
 
                     <div class="tab-pane fade" id="experiencias">
     <div class="card border-0 shadow-sm p-4">
@@ -366,6 +410,54 @@ $total_cesta = (isset($_SESSION['carrito'])) ? array_sum($_SESSION['carrito']) :
     </div>
 </div>
 
+<div class="modal fade" id="modalPedidoExito" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg text-center p-4">
+            <div class="modal-body">
+                <div class="mb-4">
+                    <i class="bi bi-bag-check-fill text-success" style="font-size: 5rem;"></i>
+                </div>
+                <h3 class="fw-light mb-3">¡Pedido realizado con éxito!</h3>
+                <p class="text-muted mb-4">
+                    Gracias por confiar en <strong>Vinos Riverview</strong>. 
+                    Hemos recibido tu pedido y estamos preparándolo con mucho mimo.
+                </p>
+                
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-vino" data-bs-dismiss="modal">
+                        VER MIS PEDIDOS
+                    </button>
+                    <a href="tienda.php" class="btn btn-outline-secondary">
+                        SEGUIR COMPRANDO
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Miramos si la URL tiene "?pedido_exito=true"
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('pedido_exito')) {
+        // Abrimos el modal de éxito
+        var modalPedido = new bootstrap.Modal(document.getElementById('modalPedidoExito'));
+        modalPedido.show();
+        
+        // Limpiamos la URL para que no vuelva a salir al recargar
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+});
+
+// Añade esto dentro del "if (urlParams.has('pedido_exito')) {"
+const tabPedidos = document.querySelector('[data-bs-target="#pedidos"]');
+if (tabPedidos) {
+    bootstrap.Tab.getInstance(tabPedidos)?.show() || new bootstrap.Tab(tabPedidos).show();
+}
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var modalCancel = document.getElementById('modalConfirmarCancelacion');
@@ -420,10 +512,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
                 <h5 class="text-uppercase mb-4 fw-bold text-vino-claro">Explorar</h5>
-                <p><a href="index.php" class="footer-link">Inicio</a></p>
-                <p><a href="tienda.php" class="footer-link">Tienda</a></p>
-                <p><a href="#" class="footer-link">Catas y Eventos</a></p>
-                <p><a href="#" class="footer-link">Sobre Nosotros</a></p>
+                <p><a href="../index.php" class="footer-link">Inicio</a></p>
+                <p><a href="./tienda.php" class="footer-link">Tienda</a></p>
+                <p><a href="./experiencias.php" class="footer-link">Catas y Eventos</a></p>
+                <p><a href="./nosotros.php" class="footer-link">Sobre Nosotros</a></p>
             </div>
 
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
@@ -447,13 +539,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="text-center text-md-end">
                     <ul class="list-unstyled list-inline">
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
+                            <a href="http://www.facebook.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
+                            <a href="http://www.x.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
+                            <a href="http://www.instagram.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
                         </li>
                     </ul>
                 </div>

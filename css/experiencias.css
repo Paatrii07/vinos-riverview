@@ -118,76 +118,11 @@ nav {
     color: white;              
 }
 
-/* Personalización de los botones de añadir a la cesta y los modales de compra */
+/* borde de las cards */
 
-.text-vino{
-    color:#722F37 !important;
-}
-.btn-vino {
-    color: #722F37;              /* Color del texto y borde */
-    border-color: #722F37;       /* Color del borde */
-    background-color: transparent;
-    transition: all 0.3s ease;
-}
-
-.btn-vino:hover {
-    background-color: #722F37;   /* Al pasar el ratón, se rellena de vino */
-    color: white;                /* El texto se vuelve blanco */
+.card{
     border-color: #722F37;
 }
-
-.btn-outline-vino:hover{
-    text-decoration: underline;
-    text-underline-offset: 5px;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
