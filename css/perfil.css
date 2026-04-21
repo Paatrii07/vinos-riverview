@@ -6,8 +6,108 @@ nav{
 
 /* Esto empuja absolutamente TODO el contenido hacia abajo */
 body {
-    padding-top: 20px !important;
+    color: #444444;
+    padding-top: 100px; /* Ajustado ligeramente para dar aire al header */
+    background-color: #fff;
 }
+
+
+/* =========================================
+    2. CABECERA Y NAVEGACIÓN (HEADER)
+   ========================================= */
+
+
+/* BARRA DE BÚSQUEDA */
+
+/* 1. La caja de texto (Input) */
+.input-busqueda {
+    border: 2px solid #722F37;     /* Borde color vino un poco más grueso */
+    border-radius: 8px;            /* Bordes redondeados */
+    padding: 10px 15px;            /* Espacio interior cómodo */
+    color: #444;
+    max-width: 500px;              /* Que no sea infinita en pantallas grandes */
+    box-shadow: none !important;   /* Quitamos sombras extrañas */
+}
+
+/* Efecto al escribir en la caja */
+.input-busqueda:focus {
+    border-color: #722F37;         /* Mantiene el color vino */
+    background-color: #fffafa;     /* Un fondo rosado casi imperceptible */
+}
+
+/* 2. El botón cuadrado con la lupa */
+.btn-lupa {
+    border: 2px solid #722F37;     /* Borde color vino igual que el input */
+    border-radius: 8px;            /* Bordes redondeados iguales */
+    background-color: white;       /* Fondo blanco */
+    color: #722F37;                /* Icono color vino */
+    padding: 10px 15px;            /* Tamaño cuadrado */
+    transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el ratón por la lupa */
+.btn-lupa:hover {
+    background-color: #722F37;     /* Se rellena de vino */
+    color: white;                  /* La lupa se vuelve blanca */
+    transform: translateY(-2px);   /* Pequeño saltito hacia arriba */
+}
+
+/* Línea sombreada separadora */
+nav {
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+}
+
+
+
+/* --- BOTÓN HAMBURGUESA --- */
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    text-decoration: none;
+    outline: 0;
+    border-color: #722F37;
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
+}
+
+/* --- ICONOS DE LA CABECERA (NUEVO: Clases para tamaño y usuario) --- */
+.icon-nav {
+    font-size: 1.5rem; /* Tamaño unificado para lupa, carrito y usuario */
+    transition: all 0.3s ease;
+}
+
+.icon-nav-user {
+    font-size: 1.5rem;
+    color: #722F37; /* El icono de usuario logueado siempre en vino */
+    transition: all 0.3s ease;
+}
+
+/* Efectos Hover en los iconos */
+.navbar a:hover .icon-nav,
+.navbar a:hover .icon-nav-user {
+    color: #722F37 !important;
+    filter: drop-shadow(0px 3px 2px rgba(114, 47, 55, 0.4));
+    transform: scale(1.15); 
+}
+
+/* --- ENLACES DEL MENÚ PRINCIPAL --- */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: #722F37;           
+}
+
+.navbar-nav .nav-link.active {
+    color: #722F37 !important; 
+    font-weight: bold;        
+}
+
+
+
+
+
+
+
+
+
+
 
 /* Y para que la alerta no esté pegada al título */
 .espaciado-alertas {

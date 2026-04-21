@@ -27,7 +27,7 @@ try {
 
     // 3. Insertar el PEDIDO (Simulamos pago "Transferencia" y estado "Completado")
     $sql_pedido = "INSERT INTO pedido (id_usuario, fecha, total_calculado, forma_pago, estado) 
-                   VALUES (:user, NOW(), :total, 'Transferencia Bancaria', 'Pendiente de Envío')";
+                   VALUES (:user, NOW(), :total, 'Transferencia Bancaria', 'Pendiente')";
     $stmt_ped = $conexion->prepare($sql_pedido);
     $stmt_ped->execute([
         ':user'  => $_SESSION['usuario_id'],

@@ -88,15 +88,12 @@ $sentencia->execute();
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                 <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li> <!-- recuperamos el nombre del usuario guardado en la sesión cuando hizo login. el caracter htmlspecialchars evita, ataques. Convierte caracteres especiales en entidades HTML -->
                                 <li><hr class="dropdown-divider"></li>
-                                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?> <!-- ¿Existe la variable rol Y ADEMÁS es igual a 'administrador'?". Si -> te lleva al panel de administrador. No-> te lleva al menu de cliente. -->
-                                    <li>
-                                        <a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">
-                                            <i class="bi bi-speedometer2 me-2"></i> Panel de Control
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <?php endif; ?> <!-- Abre el menu de usuario / cliente. -->
-                                <li><a class="dropdown-item" href="./php/perfil.php">Mi Perfil</a></li>
+                                <?php if ($_SESSION['rol'] === 'administrador'): ?>
+                                        <li><a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">Panel de Control</a></li>
+
+                                    <?php elseif ($_SESSION['rol'] === 'cliente'): ?>
+                                        <li><a class="dropdown-item" href="./php/perfil.php">Mi Perfil</a></li>
+                                    <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="./php/logout.php">Cerrar Sesión</a></li>
                             </ul>

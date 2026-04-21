@@ -9,13 +9,6 @@ if (isset($_SESSION['carrito'])) {
     $total_cesta = array_sum($_SESSION['carrito']);
 }
 
-if (!isset($_SESSION['usuario_id'])) {
-    // Guardamos la página actual para volver luego
-    header("Location: login.php?return_to=experiencias.php");
-    exit();
-}
-
-
 try {
     // Usamos las constantes que definimos en config.php
     $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
@@ -76,15 +69,12 @@ try {
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                 <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?>
-                                    <li>
-                                        <a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">
-                                            <i class="bi bi-speedometer2 me-2"></i> Panel de Control
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <?php endif; ?>
-                                <li><a class="dropdown-item" href="./perfil.php">Mi Perfil</a></li>
+                               <?php if ($_SESSION['rol'] === 'administrador'): ?>
+                                        <li><a class="dropdown-item fw-bold text-vino" href="../admin/panel.php">Panel de Control</a></li>
+
+                                    <?php elseif ($_SESSION['rol'] === 'cliente'): ?>
+                                        <li><a class="dropdown-item" href="./perfil.php">Mi Perfil</a></li>
+                                    <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="./logout.php">Cerrar Sesión</a></li>
                             </ul>
@@ -139,7 +129,7 @@ try {
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Experiencias / Catas</a>
+                                <a class="nav-link" href="./experiencias.php">Experiencias / Catas</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./nosotros.php">Sobre Nosotros</a>
@@ -225,7 +215,12 @@ try {
                                     <?php echo number_format($exp['precio'], 2); ?>€ 
                                     <small class="fs-6 text-muted">/ pers.</small>
                                 </span>
-                                
+
+                                <?php if (!isset($_SESSION['usuario_id'])): ?>
+                                        <a href="login.php?volver=experiencias.php" class="btn btn-outline-vino">
+                                            Reservar
+                                        </a>
+                                <?php else: ?>
                                 <button type="button" 
                                         class="btn btn-outline-vino" 
                                         data-bs-toggle="modal" 
@@ -234,6 +229,7 @@ try {
                                         data-nombre="<?php echo htmlspecialchars($exp['nombre_evento']); ?>">
                                     Reservar
                                 </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

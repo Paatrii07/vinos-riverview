@@ -12,10 +12,43 @@ try {
     $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // --- LÓGICA DE BORRADO ---
+    // --- LÓGICA DE ACTUALIZAR ESTADO DE PEDIDO ---
+    if (isset($_POST['actualizar_estado'])) {
+        $id_pedido = (int)$_POST['id_pedido'];
+        $nuevo_estado = $_POST['nuevo_estado'];
+        
+        $stmt = $conexion->prepare("UPDATE pedido SET estado = ? WHERE id_pedido = ?");
+        $stmt->execute([$nuevo_estado, $id_pedido]);
+        
+        header("Location: panel.php?msg=estado_actualizado");
+        exit();
+    }
+
+
+    // --- LÓGICA DE ACTUALIZAR ESTADO DE RESERVA ---
+    if (isset($_POST['actualizar_reserva'])) {
+        $id_res = (int)$_POST['id_reserva_edit'];
+        $nuevo_estado = $_POST['nuevo_estado_reserva']; 
+        
+        $stmt = $conexion->prepare("UPDATE reserva SET estado = ? WHERE id_reserva = ?");
+        $stmt->execute([$nuevo_estado, $id_res]);
+        
+        header("Location: panel.php?msg=actualizado");
+        exit();
+    }
+
+    // --- LÓGICA DE BORRADO DE PRODUCTOS---
     if (isset($_GET['borrar_prod'])) {
         $id = (int)$_GET['borrar_prod'];
         $conexion->prepare("DELETE FROM producto WHERE id_producto = ?")->execute([$id]);
+        header("Location: panel.php?msg=borrado");
+        exit();
+    }
+
+    // -- LÓGICA DE BORRADO DE RESERVAS --
+    if (isset($_GET['borrar_reserva'])) {
+        $id = (int)$_GET['borrar_reserva'];
+        $conexion->prepare("DELETE FROM reserva WHERE id_reserva = ?")->execute([$id]);
         header("Location: panel.php?msg=borrado");
         exit();
     }
@@ -30,7 +63,17 @@ try {
     // --- CONSULTAS PARA ESTADÍSTICAS ---
     $total_ventas = $conexion->query("SELECT SUM(total_calculado) FROM pedido")->fetchColumn() ?: 0;
     $num_pedidos = $conexion->query("SELECT COUNT(*) FROM pedido")->fetchColumn();
+    $todos_pedidos = $conexion->query("SELECT p.*, u.nombre, u.apellidos, u.direccion, u.telefono, p.id_usuario 
+                                 FROM pedido p 
+                                 JOIN usuario u ON p.id_usuario = u.id_usuario 
+                                 ORDER BY p.fecha DESC")->fetchAll(PDO::FETCH_ASSOC);
     $num_usuarios = $conexion->query("SELECT COUNT(*) FROM usuario WHERE rol = 'cliente'")->fetchColumn();
+    $num_reservas = $conexion->query("SELECT COUNT(*) FROM reserva")->fetchColumn();
+    $reservas = $conexion->query("SELECT r.*, u.nombre, u.apellidos, c.nombre_evento 
+                                                        FROM reserva r 
+                                                        JOIN usuario u ON r.id_usuario = u.id_usuario 
+                                                        JOIN cata c ON r.id_visita = c.id_visita 
+                                                        ORDER BY r.fecha_reserva DESC")->fetchAll(PDO::FETCH_ASSOC);
 
     // --- CONSULTA DE TODOS LOS PRODUCTOS ---
     $prods = $conexion->query("SELECT * FROM producto")->fetchAll(PDO::FETCH_ASSOC);
@@ -47,43 +90,96 @@ try {
     <title>Panel Admin - Vinos Riverview</title>
     <link href="../css/bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/panel.css" rel="stylesheet">
     <style>
-        .bg-vino-admin { background-color: #640D14; color: white; }
-        .card-stats { border: none; border-radius: 10px }
-        .nav-tabs .nav-link.active { color: #640D14; font-weight: bold; border-bottom: 3px solid #640D14; }
-        .nav-tabs .nav-link { color: #6c757d; }
+
     </style>
 </head>
-<body class="bg-light">
+<body class="bg-light d-flex flex-column min-vh-100">
 
 <nav class="navbar bg-vino-admin shadow-sm mb-4">
-    <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1 text-white">ADMIN RIVERVIEW</span>
-        <a href="../index.php" class="btn btn-outline-light btn-sm">Ver Web Pública</a>
+    <div class="container-fluid px-4">
+        <span class="navbar-brand mb-0 h1 text-white fw-light" style="letter-spacing: 2px;">
+            ADMIN <span class="fw-bold">RIVERVIEW</span>
+        </span>
+        
+        <div class="d-flex gap-2">
+            <a href="../index.php" class="btn btn-outline-light btn-sm px-3">
+                <i class="bi bi-eye me-1"></i> Web Pública
+            </a>
+            
+            <button type="button" class="btn btn-danger btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalLogout">
+                <i class="bi bi-box-arrow-right me-1"></i> Salir
+            </button>
+        </div>
     </div>
 </nav>
 
 <div class="container">
+    <?php if (isset($_GET['msg'])): ?>
+        <?php if ($_GET['msg'] == 'creado'): ?>
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> ¡Excelente! El nuevo registro se ha añadido al inventario.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($_GET['msg'] == 'borrado'): ?>
+            <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm" role="alert">
+                <i class="bi bi-trash-fill me-2"></i> Registro eliminado correctamente del sistema.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+        
+        <?php if ($_GET['msg'] == 'actualizado'): ?>
+            <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm" role="alert">
+                <i class="bi bi-pencil-square me-2"></i> Los cambios se han guardado correctamente.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>
+<main>
+
+<?php if (isset($_GET['msg']) && $_GET['msg'] == 'estado_actualizado'): ?>
+    <div class="container">
+        <div class="alert alert-success alert-dismissible fade show py-2" role="alert">
+            <i class="bi bi-check-circle me-2"></i> Estado del pedido actualizado con éxito.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="container">
     <div class="row mb-4 g-3 text-center">
-        <div class="col-md-4">
-            <div class="card card-stats shadow-sm p-3">
-                <h6 class="text-muted small">VENTAS</h6>
-                <h2 class="fw-bold"><?php echo number_format($total_ventas, 2); ?>€</h2>
-            </div>
+       
+
+    <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetalleReservas">
+        <div class="card card-stats shadow-sm p-4 border-start border-riverview-vino border-5">
+            <h6 class="text-muted small text-uppercase fw-bold">Reservas de Catas</h6>
+            <h2 class="fw-bold text-vino-panel"><?php echo $num_reservas; ?></h2>
+            <small class="text-muted italic">Gestionar asistentes</small>
         </div>
-        <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetallePedidos">
-            <div class="card card-stats shadow-sm p-3 border-start border-success border-4">
-                <h6 class="text-muted small">PEDIDOS (Ver todos)</h6>
-                <h2 class="fw-bold"><?php echo $num_pedidos; ?></h2>
-            </div>
-        </div>
-            <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetalleClientes">
-                <div class="card card-stats shadow-sm p-3 border-start border-warning border-4">
-                    <h6 class="text-muted small">CLIENTES (Ver todos)</h6>
-                    <h2 class="fw-bold"><?php echo $num_usuarios; ?></h2>
-                </div>
+</div>
+
+    
+
+    <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetallePedidos">
+            <div class="card card-stats shadow-sm p-4 border-start border-riverview-vino border-5">
+                <h6 class="text-muted small text-uppercase fw-bold">Pedidos Realizados</h6>
+                <h2 class="fw-bold text-vino-panel"><?php echo $num_pedidos; ?></h2>
+                <small class="text-muted italic">Click para gestionar estados</small>
             </div>
     </div>
+
+    <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetalleClientes">
+        <div class="card card-stats shadow-sm p-4 border-start border-riverview-suave border-5">
+            <h6 class="text-muted small text-uppercase fw-bold">Cartera de Clientes</h6>
+            <h2 class="fw-bold text-vino-panel"><?php echo $num_usuarios; ?></h2>
+            <small class="text-muted italic">Click para ver contactos</small>
+        </div>
+    </div>
+</div>
 
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
@@ -117,7 +213,7 @@ try {
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Precio</th>
-                                <th class="text-end">Acciones</th>
+                                <th>Stock</th> <th class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -128,11 +224,23 @@ try {
                             <tr>
                                 <td><img src="../img/<?php echo $pr['imagen_url']; ?>" width="40" class="rounded shadow-sm"></td>
                                 <td><strong><?php echo htmlspecialchars($pr['nombre']); ?></strong></td>
-                                <td><small class="text-muted"><?php echo mb_strimwidth(htmlspecialchars($pr['descripcion']), 0, 50, "..."); ?></small></td>
+                                <td><small class="text-muted"><?php echo mb_strimwidth(htmlspecialchars($pr['descripcion']), 0, 40, "..."); ?></small></td>
                                 <td><?php echo number_format($pr['precio_unidad'], 2); ?>€</td>
+                                
+                                <td>
+                                    <?php if($pr['stock_actual'] <= 5): ?>
+                                        <span class="badge bg-danger">Bajo: <?php echo $pr['stock_actual']; ?></span>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary"><?php echo $pr['stock_actual']; ?> uds</span>
+                                    <?php endif; ?>
+                                </td>
+
                                 <td class="text-end">
                                     <a href="editar_producto.php?id=<?php echo $pr['id_producto']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                                    <a href="panel.php?borrar_prod=<?php echo $pr['id_producto']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Borrar producto?')"><i class="bi bi-trash"></i></a>
+                                    <a href="#" class="btn btn-sm btn-outline-danger" 
+                                        onclick="prepararBorrado('panel.php?borrar_prod=<?php echo $pr['id_producto']; ?>', 'Eliminar Producto', '¿Seguro que quieres eliminar <?php echo htmlspecialchars($pr['nombre']); ?>?')">
+                                            <i class="bi bi-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <?php 
@@ -156,106 +264,301 @@ try {
             <table class="table align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th class="ps-4">Evento</th>
-                        <th>Fecha</th>
-                        <th>Aforo Máx.</th>
+                        <th class="ps-4">Evento / Descripción</th>
+                        <th>Fecha y Hora</th> <th>Precio</th>
+                        <th>Aforo</th>
                         <th class="text-end pe-4">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+               <tbody>
                     <?php 
                     $exps = $conexion->query("SELECT * FROM cata")->fetchAll();
                     foreach($exps as $ex): ?>
                     <tr>
-                        <td class="ps-4 fw-bold text-vino"><?php echo htmlspecialchars($ex['nombre_evento']); ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($ex['fecha'])); ?></td>
-                        <td><?php echo $ex['aforo_maximo']; ?> personas</td>
+                        <td class="ps-4">
+                            <div class="fw-bold text-vino"><?php echo htmlspecialchars($ex['nombre_evento']); ?></div>
+                            <small class="text-muted">ID Visita: #<?php echo $ex['id_visita']; ?></small>
+                        </td>
+                        <td>
+                            <div class="small"><?php echo date('d/m/Y', strtotime($ex['fecha'])); ?></div>
+                        </td>
+                        <td class="fw-bold"><?php echo number_format($ex['precio'], 2); ?>€</td>
+                        <td><?php echo $ex['aforo_maximo']; ?> pers.</td>
                         <td class="text-end pe-4">
                             <a href="editar_experiencia.php?id=<?php echo $ex['id_visita']; ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                            <a href="panel.php?borrar_exp=<?php echo $ex['id_visita']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Borrar experiencia?')"><i class="bi bi-trash"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-danger" 
+                            onclick="prepararBorrado('panel.php?borrar_exp=<?php echo $ex['id_visita']; ?>', 'Eliminar Experiencia', '¿Seguro?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
+</main>
 
-<!-- Modal para mostrar los datos de clientes -->
 <div class="modal fade" id="modalDetalleClientes" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title"><i class="bi bi-people me-2"></i>Listado de Clientes</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-3">Nombre</th>
-                            <th>Email</th>
-                            <th>Teléfono</th>
-                            <th>Dirección</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        $clientes = $conexion->query("SELECT * FROM usuario WHERE rol = 'cliente'")->fetchAll();
-                        foreach($clientes as $c): ?>
-                        <tr>
-                            <td class="ps-3"><?php echo htmlspecialchars($c['nombre'] . " " . $c['apellidos']); ?></td>
-                            <td><?php echo htmlspecialchars($c['email']); ?></td>
-                            <td><?php echo $c['telefono'] ?: '---'; ?></td>
-                            <td class="small"><?php echo $c['direccion'] ?: 'No definida'; ?></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para mostrar los datos de pedido/ detalle de pedido -->
- <div class="modal fade" id="modalDetallePedidos" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title"><i class="bi bi-cart-check me-2"></i>Historial Completo de Pedidos</h5>
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header text-white" style="background-color: #640D14;">
+                <h5 class="modal-title fw-light"><i class="bi bi-people me-2"></i> CARTERA DE CLIENTES</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-3">ID</th>
-                            <th>Cliente</th>
-                            <th>Fecha</th>
-                            <th>Total</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        $todos_pedidos = $conexion->query("SELECT p.*, u.nombre FROM pedido p JOIN usuario u ON p.id_usuario = u.id_usuario ORDER BY p.fecha DESC")->fetchAll();
-                        foreach($todos_pedidos as $tp): ?>
-                        <tr>
-                            <td class="ps-3">#<?php echo $tp['id_pedido']; ?></td>
-                            <td><?php echo htmlspecialchars($tp['nombre']); ?></td>
-                            <td><?php echo date('d/m/Y H:i', strtotime($tp['fecha'])); ?></td>
-                            <td class="fw-bold"><?php echo number_format($tp['total_calculado'], 2); ?>€</td>
-                            <td><span class="badge bg-info text-dark"><?php echo $tp['estado']; ?></span></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Nombre</th>
+                                <th>Email</th>
+                                <th class="pe-4">Dirección</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $clientes = $conexion->query("SELECT * FROM usuario WHERE rol = 'cliente'")->fetchAll();
+                            foreach($clientes as $c): ?>
+                            <tr>
+                                <td class="ps-4"><strong><?php echo htmlspecialchars($c['nombre'] . " " . $c['apellidos']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($c['email']); ?></td>
+                                <td class="pe-4 small text-muted"><?php echo $c['direccion'] ?: 'Sin dirección'; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="modalDetallePedidos" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+<div class="modal-header text-white" style="background-color: #640D14;">
+    <h5 class="modal-title fw-light"><i class="bi bi-cart-check me-2"></i> GESTIÓN DE PEDIDOS</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body p-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-4 text-vino">ID / Fecha</th>
+                    <th class="text-vino">Cliente / Contacto</th>
+                    <th class="text-vino">Dirección de Envío</th>
+                    <th class="text-vino">Total</th>
+                    <th class="text-vino">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($todos_pedidos as $tp): ?>
+                <?php 
+                    // Lógica de colores según estado
+                    $ped_col = 'secondary';
+                    if($tp['estado'] == 'enviado') $ped_col = 'success';
+                    if($tp['estado'] == 'cancelado') $ped_col = 'danger';
+                ?>
+                <tr>
+                    <td class="ps-4">
+                        <div class="fw-bold text-vino">#<?php echo $tp['id_pedido']; ?></div>
+                        <small class="text-muted"><?php echo date('d/m/Y', strtotime($tp['fecha'])); ?></small>
+                    </td>
+                    <td>
+                        <div class="fw-bold text-dark"><?php echo htmlspecialchars($tp['nombre'] . " " . $tp['apellidos']); ?></div>
+                        
+                        <div class="small text-muted">
+                            <i class="bi bi-telephone me-1 text-vino"></i> 
+                            <?php echo htmlspecialchars($tp['telefono'] ?? 'Sin teléfono'); ?>
+                        </div>
+
+                        <?php 
+                        $usuario_pedido = $tp['id_usuario'] ?? null; 
+                        $usuario_sesion = $_SESSION['id_usuario'] ?? null;
+
+                        if ($usuario_pedido && $usuario_sesion && $usuario_pedido == $usuario_sesion): 
+                        ?>
+                            <span class="badge bg-light text-vino border mt-1" style="font-size: 0.6rem;">ADMIN TEST</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <small class="text-muted">
+                            <i class="bi bi-geo-alt me-1 text-vino"></i>
+                            <?php echo htmlspecialchars($tp['direccion'] ?? 'Recogida en tienda'); ?>
+                        </small>
+                    </td>
+                    <td class="fw-bold"><?php echo number_format($tp['total_calculado'], 2); ?>€</td>
+                    <td>
+                        <form method="POST" class="d-flex gap-2">
+                            <input type="hidden" name="id_pedido" value="<?php echo $tp['id_pedido']; ?>">
+                            <select name="nuevo_estado" class="form-select form-select-sm fw-bold border-<?php echo $ped_col; ?> text-<?php echo $ped_col; ?>" style="width: auto;">
+                                <option value="pendiente" <?php echo ($tp['estado'] == 'pendiente')?'selected':''; ?>>⏳ Pendiente</option>
+                                <option value="enviado" <?php echo ($tp['estado'] == 'enviado')?'selected':''; ?>>📦 Enviado</option>
+                                <option value="cancelado" <?php echo ($tp['estado'] == 'cancelado')?'selected':''; ?>>❌ Cancelado</option>
+                            </select>
+                            <button type="submit" name="actualizar_estado" class="btn btn-sm btn-<?php echo $ped_col; ?>">
+                                <i class="bi bi-check2"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalDetalleReservas" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header text-white" style="background-color: #640D14;">
+                <h5 class="modal-title fw-light"><i class="bi bi-calendar-check me-2"></i> ASISTENTES A CATAS</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Evento / Experiencia</th>
+                                <th class="text-center">ID Reserva</th> 
+                                <th>Cliente</th>
+                                <th>Fecha Reserva</th>
+                                <th>Estado</th>
+                                <th class="pe-4 text-end">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($reservas as $res): ?>
+                            <?php 
+                                // Definimos el color del borde y del select según el estado
+                                $color_borde = ($res['estado'] == 'confirmada') ? 'success' : 'danger';
+                            ?>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-vino"><?php echo htmlspecialchars($res['nombre_evento']); ?></div>
+                                    <small class="text-muted italic">Ref. Visita: #<?php echo $res['id_visita']; ?></small>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-dark px-3 py-2" style="font-family: monospace; font-size: 0.9rem;">
+                                        #<?php echo $res['id_reserva']; ?>
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="fw-bold"><?php echo htmlspecialchars($res['nombre'] . " " . $res['apellidos']); ?></div>
+                                </td>
+
+                                <td><?php echo date('d/m/Y', strtotime($res['fecha_reserva'])); ?></td>
+
+                                <td>
+                                    <form method="POST" class="d-flex gap-1">
+                                        <input type="hidden" name="id_reserva_edit" value="<?php echo $res['id_reserva']; ?>">
+                                        
+                                        <select name="nuevo_estado_reserva" 
+                                                class="form-select form-select-sm fw-bold border-<?php echo $color_borde; ?> text-<?php echo $color_borde; ?>" 
+                                                style="width: auto;">
+                                            <option value="confirmada" <?php echo ($res['estado'] == 'confirmada') ? 'selected' : ''; ?>>🟢 Confirmada</option>
+                                            <option value="cancelada" <?php echo ($res['estado'] == 'cancelada') ? 'selected' : ''; ?>>🔴 Cancelada</option>
+                                        </select>
+                                        
+                                        <button type="submit" name="actualizar_reserva" class="btn btn-sm btn-<?php echo $color_borde; ?>">
+                                            <i class="bi bi-check2"></i>
+                                        </button>
+                                    </form>
+                                </td>
+
+                                <td class="pe-4 text-end">
+                                    <a href="#" class="btn btn-sm btn-outline-danger" 
+                                    onclick="prepararBorrado('panel.php?borrar_reserva=<?php echo $res['id_reserva']; ?>', 'Eliminar Reserva', '¿Seguro que quieres borrar la reserva #<?php echo $res['id_reserva']; ?>?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalLogout" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title fw-light text-vino-admin"><i class="bi bi-shield-lock me-2"></i> SEGURIDAD</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <p class="lead mb-0">¿Deseas cerrar tu sesión de administrador?</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4">
+                <button type="button" class="btn btn-light border px-4" data-bs-dismiss="modal">Cancelar</button>
+                <a href="../php/logout.php" class="btn btn-danger px-4 shadow-sm" style="background-color: #640D14; border: none;">Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalConfirmarBorrado" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header border-0 pt-4 px-4 justify-content-center">
+                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2.5rem;"></i>
+                </div>
+            </div>
+            <div class="modal-body text-center px-4">
+                <h4 class="fw-bold text-dark" id="tituloBorrar">¿Estás seguro?</h4>
+                <p class="text-muted" id="mensajeBorrar">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4">
+                <button type="button" class="btn btn-light px-4 border" data-bs-dismiss="modal">Cancelar</button>
+                <a href="#" id="botonConfirmarBorrar" class="btn btn-danger px-4 shadow-sm" style="background-color: #640D14; border: none;">Eliminar ahora</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer-admin mt-auto py-3 bg-white border-top">
+    <div class="container-fluid px-4">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0 small">&copy; 2026 <span class="text-vino">Vinos Riverview</span> - Gestión Interna</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <span class="small text-muted">Sesión: <strong><?php echo htmlspecialchars($_SESSION['nombre']); ?></strong></span>
+            </div>
+        </div>
+    </div>
+</footer>
+
 <script src="../css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+<script>
+    if (window.location.search.includes('msg=')) {
+        setTimeout(function() {
+            const url = new URL(window.location);
+            url.searchParams.delete('msg');
+            window.history.replaceState({}, document.title, url);
+            const alert = document.querySelector('.alert');
+            if (alert) { new bootstrap.Alert(alert).close(); }
+        }, 3000);
+    }
+
+    function prepararBorrado(url, titulo, mensaje) {
+        document.getElementById('tituloBorrar').innerText = titulo;
+        document.getElementById('mensajeBorrar').innerText = mensaje;
+        document.getElementById('botonConfirmarBorrar').setAttribute('href', url);
+        var miModal = new bootstrap.Modal(document.getElementById('modalConfirmarBorrado'));
+        miModal.show();
+    }
+</script>

@@ -10,7 +10,9 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'administrador') {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombre = $_POST['nombre'];
+    $descripcion = $_POST['descripcion']; // Capturamos descripción
     $precio = $_POST['precio'];
+    $stock = $_POST['stock'];             // Capturamos stock
     $cat = $_POST['categoria'];
 
     $nombre_foto = time() . "_" . $_FILES['foto']['name']; 
@@ -18,11 +20,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $destino = "../img/" . $nombre_foto;
 
     if (move_uploaded_file($ruta_temporal, $destino)) {
-        $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
-        $sql = "INSERT INTO producto (nombre, precio_unidad, imagen_url, id_categoria) VALUES (?, ?, ?, ?)";
-        $conexion->prepare($sql)->execute([$nombre, $precio, $nombre_foto, $cat]);
-        header("Location: panel.php?msg=creado");
-        exit();
+        try {
+            $conexion = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            
+            // Añadimos descripcion y stock_actual a la consulta
+            $sql = "INSERT INTO producto (nombre, descripcion, precio_unidad, imagen_url, id_categoria, stock_actual) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+            
+            $conexion->prepare($sql)->execute([$nombre, $descripcion, $precio, $nombre_foto, $cat, $stock]);
+            
+            header("Location: panel.php?msg=creado");
+            exit();
+        } catch(PDOException $e) {
+            die("Error al insertar: " . $e->getMessage());
+        }
     }
 }
 ?>
@@ -33,10 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <link href="../css/bootstrap-5.3.8-dist/css/bootstrap.css" rel="stylesheet">
     <title>Nuevo Producto - Vinos Riverview</title>
-    <style>
-        .btn-vino-admin { background-color: #640D14; color: white; }
-        .btn-vino-admin:hover { background-color: #4a0a0f; color: white; }
-    </style>
+    <link href="../css/añadir_servicio.css" rel="stylesheet">
+
 </head>
 <body class="bg-light">
 
@@ -50,20 +60,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <form method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
                 <h3 class="fw-light mb-4">Añadir Nuevo Producto</h3>
                 
-                <label class="small text-muted">Nombre del producto</label>
+                <label class="form-label">Nombre del producto</label>
                 <input type="text" name="nombre" class="form-control mb-3" placeholder="Ej: Vino Tinto Reserva" required>
                 
-                <label class="small text-muted">Precio (€)</label>
-                <input type="number" step="0.01" name="precio" class="form-control mb-3" placeholder="0.00" required>
+                <label class="form-label">Descripción detallada</label>
+                <textarea name="descripcion" class="form-control mb-3" rows="3" placeholder="Notas de cata, origen..." required></textarea>
                 
-                <label class="small text-muted">Categoría</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Precio (€)</label>
+                        <input type="number" step="0.01" name="precio" class="form-control mb-3" placeholder="0.00" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Stock Inicial</label>
+                        <input type="number" name="stock" class="form-control mb-3" value="0" min="0" required>
+                    </div>
+                </div>
+                
+                <label class="form-label">Categoría</label>
                 <select name="categoria" class="form-control mb-3">
                     <option value="1">Vino</option>
                     <option value="2">Queso</option>
                     <option value="3">Embutido</option>
                 </select>
                 
-                <label class="small text-muted">Imagen del producto</label>
+                <label class="form-label">Imagen del producto</label>
                 <input type="file" name="foto" class="form-control mb-3" accept="image/*" required>
                 
                 <button type="submit" class="btn btn-vino-admin w-100">GUARDAR EN EL INVENTARIO</button>
@@ -71,6 +92,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
-
+<footer class="footer-admin mt-5">
+    <div class="container-fluid text-center">
+        <p class="mb-0 small text-muted">&copy; 2026 Vinos Riverview - Gestión de Inventario</p>
+    </div>
+</footer>
 </body>
 </html>

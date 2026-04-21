@@ -104,15 +104,12 @@ $stmt->execute();
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                 <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?>
-                                    <li>
-                                        <a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">
-                                            <i class="bi bi-speedometer2 me-2"></i> Panel de Control
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <?php endif; ?>
-                                <li><a class="dropdown-item" href="./perfil.php">Mi Perfil</a></li>
+                               <?php if ($_SESSION['rol'] === 'administrador'): ?>
+                                        <li><a class="dropdown-item fw-bold text-vino" href="../admin/panel.php">Panel de Control</a></li>
+
+                                    <?php elseif ($_SESSION['rol'] === 'cliente'): ?>
+                                        <li><a class="dropdown-item" href="./perfil.php">Mi Perfil</a></li>
+                                    <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="./logout.php">Cerrar Sesión</a></li>
                             </ul>
@@ -335,13 +332,13 @@ $stmt->execute();
                 <div class="text-center text-md-end">
                     <ul class="list-unstyled list-inline">
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
+                            <a href="http://www.facebook.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-facebook"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
+                            <a href="http://www.x.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-twitter-x"></i></a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="#" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
+                            <a href="http://www.instagram.com" class="btn-floating btn-sm" style="font-size: 23px;"><i class="bi bi-instagram"></i></a>
                         </li>
                     </ul>
                 </div>

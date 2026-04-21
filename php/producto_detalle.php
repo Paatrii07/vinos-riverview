@@ -168,13 +168,13 @@ try {
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Experiencias / Catas</a>
+                                <a class="nav-link" href="./experiencias.php">Experiencias / Catas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Sobre Nosotros</a>
+                                <a class="nav-link" href="./nosotros.php">Sobre Nosotros</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Contacto</a>
+                                <a class="nav-link" href="./contacto.php">Contacto</a>
                             </li>
                         </ul>
                     </div>

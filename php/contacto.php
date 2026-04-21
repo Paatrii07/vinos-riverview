@@ -102,10 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 
     <header>
-        <nav class="navbar bg-white fixed-top shadow-sm">
+        <nav class="navbar bg-white fixed-top">
             <div class="container-fluid position-relative">
                 
-                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Abrir menú de navegación">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -114,25 +114,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </a>
 
                 <div class="d-flex gap-3 align-items-center">
-                    <a href="#" class="text-dark" data-bs-toggle="collapse" data-bs-target="#searchBar">
+                    
+                    <a href="#" class="text-dark" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#searchBar" 
+                        aria-expanded="false" 
+                        onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
                         <i class="bi bi-search icon-nav"></i>
                     </a>
 
                     <?php if (!isset($_SESSION['usuario_id'])): ?>
-                        <a href="./login.php" class="text-dark"><i class="bi bi-person icon-nav"></i></a>
+                        <a href="./login.php?volver=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" class="text-dark">
+                            <i class="bi bi-person icon-nav"></i>
+                        </a>
                     <?php else: ?>
                         <div class="dropdown">
-                            <a href="#" class="text-dark dropdown-toggle" data-bs-toggle="dropdown">
+                            <a href="#" class="text-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-fill icon-nav-user"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                 <li><h6 class="dropdown-header">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?></h6></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?>
-                                    <li><a class="dropdown-item fw-bold text-vino" href="./admin/panel.php">Panel de Control</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <?php endif; ?>
-                                <li><a class="dropdown-item" href="./perfil.php">Mi Perfil</a></li>
+                               <?php if ($_SESSION['rol'] === 'administrador'): ?>
+                                        <li><a class="dropdown-item fw-bold text-vino" href="../admin/panel.php">Panel de Control</a></li>
+
+                                    <?php elseif ($_SESSION['rol'] === 'cliente'): ?>
+                                        <li><a class="dropdown-item" href="./perfil.php">Mi Perfil</a></li>
+                                    <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="./logout.php">Cerrar Sesión</a></li>
                             </ul>
@@ -142,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <a href="./carrito.php" class="text-dark position-relative text-decoration-none">
                         <i class="bi bi-cart icon-nav" style="font-size: 1.5rem;"></i>
                         <?php if ($total_cesta > 0): ?>
-                           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-vino" style="font-size: 0.6rem;">
+                           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-vino-carrito">
                                 <?php echo $total_cesta; ?>
                                 <span class="visually-hidden">productos</span>
                             </span>
@@ -150,32 +158,70 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </a>
                 </div>
             
-                <aside class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">
+                <aside class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                     <div class="offcanvas-header">
-                        <h5 class="offcanvas-title">Menú</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar menú"></button>
                     </div>
+                    
                     <div class="offcanvas-body">
                         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                            <li class="nav-item"><a class="nav-link" href="../index.php">Inicio</a></li>
-                            <li class="nav-item"><a class="nav-link" href="./tienda.php">Tienda</a></li>
-                            <li class="nav-item"><a class="nav-link" href="./experiencias.php">Experiencias / Catas</a></li>
-                            <li class="nav-item"><a class="nav-link" href="./nosotros.php">Sobre Nosotros</a></li>
-                            <li class="nav-item"><a class="nav-link active fw-bold text-vino" href="./contacto.php">Contacto</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="../index.php">Inicio</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <a class="nav-link w-100" href="./tienda.php">Tienda</a>
+                                    <a class="nav-link px-3" href="#menu-tienda" role="button" 
+                                        data-bs-toggle="collapse" aria-expanded="false" aria-controls="menu-tienda">
+                                        <i class="bi bi-chevron-down small"></i>
+                                    </a>
+                                </div>
+
+                                <div class="collapse" id="menu-tienda">
+                                    <ul class="nav flex-column ps-4 border-start ms-2 my-1 bg-light bg-opacity-25">
+                                        <li class="nav-item">
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=vinos">Vinos</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=quesos">Quesos</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link py-1" href="./tienda.php?categoria=embutidos">Embutidos</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="./experiencias.php">Experiencias / Catas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./nosotros.php">Sobre Nosotros</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./contacto.php">Contacto</a>
+                            </li>
                         </ul>
                     </div>
                 </aside>
             </div>
         </nav>
-        
+
         <div class="collapse bg-white shadow-sm buscador-superior" id="searchBar">
-            <div class="container py-4"> 
-                <form action="./tienda.php" method="GET" class="d-flex justify-content-center align-items-center gap-2">
+            <div class="container py-4"> <form action="./tienda.php" method="GET" class="d-flex justify-content-center align-items-center gap-2">
+                    
                     <input type="text" name="q" class="form-control input-busqueda" placeholder="Buscar producto...">
-                    <button class="btn btn-lupa" type="submit"><i class="bi bi-search"></i></button>
+                    
+                    <button class="btn btn-lupa" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+
                 </form>
             </div>
         </div>
+
     </header>
 
     <main>

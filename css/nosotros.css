@@ -1,5 +1,5 @@
 /* =========================================
-   1. ESTILOS GENERALES Y FORMULARIOS
+    1. ESTILOS GENERALES Y FORMULARIOS
    ========================================= */
 
 /* Empujamos el contenido para que no se esconda bajo el menú fijo */
@@ -122,6 +122,12 @@ nav {
 .navbar-nav .nav-link.active {
     color: #722F37 !important; 
     font-weight: bold;        
+}
+
+/* Numerito del carrito de la compra */
+.text-vino-carrito {
+    color: #722F37 !important;
+    font-size: 0.9rem;
 }
 
 

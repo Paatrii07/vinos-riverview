@@ -144,6 +144,12 @@ try {
     </div>
 </div>
 
+<footer class="footer-admin mt-5">
+    <div class="container-fluid text-center">
+        <p class="mb-0 small text-muted">&copy; 2026 Vinos Riverview - Edición de Inventario</p>
+    </div>
+</footer>
+
 <script src="../css/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

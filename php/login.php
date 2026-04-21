@@ -45,23 +45,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['nombre'] = $usuario['nombre'];
         $_SESSION['rol'] = $usuario['rol'];
 
-        // REDIRECCIÓN INTELIGENTE
-        if ($_SESSION['rol'] == 'administrador') {
-            header("Location: ../admin/panel.php");
-        } else {
-            // Si venimos de experiencias.php, el valor estará en el input hidden 'return_to'
-            if (isset($_POST['return_to']) && !empty($_POST['return_to'])) {
+        if ($_SESSION['rol'] === 'administrador') {
+                // 1. Si es admin, siempre al panel
+                header("Location: ../admin/panel.php");
+            } 
+            elseif (isset($_GET['volver']) && !empty($_GET['volver'])) {
+                // 2. Si hay un destino en la URL (?volver=experiencias.php)
+                header("Location: " . $_GET['volver']);
+            } 
+            elseif (isset($_POST['return_to']) && !empty($_POST['return_to'])) {
+                // 3. Por si acaso lo mandas por un input hidden en el formulario
                 header("Location: " . $_POST['return_to']);
-            } else {
+            } 
+            else {
+                // 4. Si no hay nada de lo anterior, al inicio
                 header("Location: ../index.php");
             }
+            
+            exit(); // Muy importante para que no ejecute nada más
+                
+            } else {
+                $mensaje_error = "El correo o la contraseña son incorrectos.";
+            }
         }
-        exit();
-        
-    } else {
-        $mensaje_error = "El correo o la contraseña son incorrectos.";
-    }
-}
 
 // Calcular total carrito para el header (opcional si lo usas en el nav)
 $total_cesta = (isset($_SESSION['carrito'])) ? array_sum($_SESSION['carrito']) : 0;
@@ -218,7 +224,7 @@ $total_cesta = (isset($_SESSION['carrito'])) ? array_sum($_SESSION['carrito']) :
                     <div class="alert alert-danger text-center"><?php echo $mensaje_error; ?></div>
                 <?php endif; ?>
 
-                <form action="login.php" method="POST" novalidate class="needs-validation">
+                <form action="login.php<?php echo isset($_GET['volver']) ? '?volver=' . urlencode($_GET['volver']) : ''; ?>" method="POST" novalidate class="needs-validation">
                     <input type="hidden" name="return_to" value="<?php echo isset($_GET['return_to']) ? htmlspecialchars($_GET['return_to']) : (isset($_POST['return_to']) ? htmlspecialchars($_POST['return_to']) : ''); ?>">
 
                     <div class="mb-3">
