@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // porque el HTML se puede trucar.
 
     // 1. Comprobar campos obligatorios
-    if (empty($nombre) || empty($apellidos) || empty($email) || empty($pass_usuario) || empty($confirm_pass)) {
+    if (empty($nombre) || empty($apellidos) || empty($email) || empty($direccion) || empty($pass_usuario) || empty($confirm_pass)) {
         $mensaje_error = "Por favor, rellena todos los campos obligatorios (*).";
     }
     // 2. Comprobar que el email tiene formato de email real (@, ., etc)
@@ -317,9 +317,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small text-muted">Dirección de Envío</label>
-                        <div class="input-group">
-                            <input type="text" name="direccion" class="form-control" placeholder="Calle, número, piso, ciudad...">
+                        <label class="form-label small text-muted">Dirección de Envío <span class="text-danger">*</span></label>
+                        <div class="input-group has-validation">
+                            <input type="text" name="direccion" class="form-control" 
+                                placeholder="Calle, número, piso, ciudad..." required>
+                            
+                            <div class="invalid-feedback">
+                                Por favor, introduce una dirección para tus pedidos.
+                            </div>
                         </div>
                     </div>
 

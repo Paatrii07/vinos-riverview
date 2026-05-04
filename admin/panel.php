@@ -158,7 +158,7 @@ try {
         <div class="card card-stats shadow-sm p-4 border-start border-riverview-vino border-5">
             <h6 class="text-muted small text-uppercase fw-bold">Reservas de Catas</h6>
             <h2 class="fw-bold text-vino-panel"><?php echo $num_reservas; ?></h2>
-            <small class="text-muted italic">Gestionar asistentes</small>
+            <small class="text-muted italic">Gestionar reservas</small>
         </div>
 </div>
 
@@ -168,7 +168,7 @@ try {
             <div class="card card-stats shadow-sm p-4 border-start border-riverview-vino border-5">
                 <h6 class="text-muted small text-uppercase fw-bold">Pedidos Realizados</h6>
                 <h2 class="fw-bold text-vino-panel"><?php echo $num_pedidos; ?></h2>
-                <small class="text-muted italic">Click para gestionar estados</small>
+                <small class="text-muted italic">Gestionar pedidos</small>
             </div>
     </div>
 
@@ -176,7 +176,7 @@ try {
         <div class="card card-stats shadow-sm p-4 border-start border-riverview-suave border-5">
             <h6 class="text-muted small text-uppercase fw-bold">Cartera de Clientes</h6>
             <h2 class="fw-bold text-vino-panel"><?php echo $num_usuarios; ?></h2>
-            <small class="text-muted italic">Click para ver contactos</small>
+            <small class="text-muted italic">Ver clientes</small>
         </div>
     </div>
 </div>
@@ -213,7 +213,8 @@ try {
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Precio</th>
-                                <th>Stock</th> <th class="text-end">Acciones</th>
+                                <th>Stock</th> 
+                                <th class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>

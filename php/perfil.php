@@ -364,7 +364,7 @@ if (isset($_SESSION['carrito'])) {
         </div>
     </div>
 
-                        <div class="tab-pane fade" id="experiencias">
+    <div class="tab-pane fade" id="experiencias">
         <div class="card border-0 shadow-sm p-4">
             <?php if (count($mis_reservas) > 0): ?>
                 <div class="table-responsive">
@@ -389,17 +389,28 @@ if (isset($_SESSION['carrito'])) {
                                     </td>
                                     <td><?php echo date('d/m/Y', strtotime($res['fecha'])); ?></td>
                                     <td><?php echo $res['hora']; ?></td>
-                                    <td><span class="badge bg-success text-uppercase"><?php echo $res['estado']; ?></span></td>
+                                    
+                                    <td>
+                                        <?php $clase_badge = ($res['estado'] == 'confirmada') ? 'bg-success' : 'bg-danger'; ?>
+                                        <span class="badge <?php echo $clase_badge; ?> text-uppercase">
+                                            <?php echo $res['estado']; ?>
+                                        </span>
+                                    </td>
+
                                     <td class="fw-bold"><?php echo $res['precio']; ?>€</td>
                                     <td class="text-center">
-                                        <button type="button" 
-                                                class="btn btn-sm btn-outline-danger" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalConfirmarCancelacion" 
-                                                data-id-visita="<?php echo $res['id_visita']; ?>"
-                                                data-nombre-evento="<?php echo htmlspecialchars($res['nombre_evento']); ?>">
-                                            <i class="bi bi-trash"></i> Cancelar
-                                        </button>
+                                        <?php if ($res['estado'] !== 'cancelada'): ?>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#modalConfirmarCancelacion" 
+                                                    data-id-visita="<?php echo $res['id_visita']; ?>"
+                                                    data-nombre-evento="<?php echo htmlspecialchars($res['nombre_evento']); ?>">
+                                                <i class="bi bi-trash"></i> Cancelar
+                                            </button>
+                                        <?php else: ?>
+                                            <small class="text-muted">Sin acciones</small>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
