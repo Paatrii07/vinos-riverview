@@ -156,7 +156,7 @@ try {
 
     <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetalleReservas">
         <div class="card card-stats shadow-sm p-4 border-start border-riverview-vino border-5">
-            <h6 class="text-muted small text-uppercase fw-bold">Reservas de Catas</h6>
+            <h6 class="text-muted small text-uppercase fw-bold">Gestión de reservas</h6>
             <h2 class="fw-bold text-vino-panel"><?php echo $num_reservas; ?></h2>
             <small class="text-muted italic">Gestionar reservas</small>
         </div>
@@ -166,7 +166,7 @@ try {
 
     <div class="col-md-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetallePedidos">
             <div class="card card-stats shadow-sm p-4 border-start border-riverview-vino border-5">
-                <h6 class="text-muted small text-uppercase fw-bold">Pedidos Realizados</h6>
+                <h6 class="text-muted small text-uppercase fw-bold">Gestión de pedidos</h6>
                 <h2 class="fw-bold text-vino-panel"><?php echo $num_pedidos; ?></h2>
                 <small class="text-muted italic">Gestionar pedidos</small>
             </div>
@@ -352,6 +352,8 @@ try {
                     <th class="text-vino">Dirección de Envío</th>
                     <th class="text-vino">Total</th>
                     <th class="text-vino">Estado</th>
+                    <th class="text-vino text-end pe-4">Acciones</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -404,6 +406,12 @@ try {
                             </button>
                         </form>
                     </td>
+                    <td class="text-end pe-4">
+                        <button type="button" class="btn btn-sm btn-outline-vino btn-ver-detalle-admin" 
+                                data-id="<?php echo $tp['id_pedido']; ?>">
+                            <i class="bi bi-eye"></i> Detalle
+                        </button>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -418,7 +426,7 @@ try {
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content shadow-lg border-0">
             <div class="modal-header text-white" style="background-color: #640D14;">
-                <h5 class="modal-title fw-light"><i class="bi bi-calendar-check me-2"></i> ASISTENTES A CATAS</h5>
+                <h5 class="modal-title fw-light"><i class="bi bi-calendar-check me-2"></i> GESTIÓN DE RESERVAS</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0">
@@ -486,6 +494,30 @@ try {
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalAdminDetalleProductos" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-light">Contenido del Pedido #<span id="adminIdPedidoText"></span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th class="text-end">P. Unitario</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminCuerpoDetalle">
+                        <!-- Aquí carga el AJAX -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -562,4 +594,26 @@ try {
         var miModal = new bootstrap.Modal(document.getElementById('modalConfirmarBorrado'));
         miModal.show();
     }
+</script>
+
+<script> 
+    document.addEventListener("DOMContentLoaded", function() {
+        // Escuchamos el clic en los botones de "Ver Detalle" dentro del modal de pedidos
+        document.querySelectorAll('.btn-ver-detalle-admin').forEach(boton => {
+            boton.addEventListener('click', function() {
+                const idPedido = this.getAttribute('data-id');
+                document.getElementById('adminIdPedidoText').textContent = idPedido;
+
+                // Cargamos los datos usando fetch (AJAX)
+                fetch('../php/get_detalle_pedido.php?id=' + idPedido)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('adminCuerpoDetalle').innerHTML = html;
+                        // Abrimos el segundo modal
+                        var modalHijo = new bootstrap.Modal(document.getElementById('modalAdminDetalleProductos'));
+                        modalHijo.show();
+                    });
+            });
+        });
+    });
 </script>

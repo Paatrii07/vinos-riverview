@@ -329,6 +329,7 @@ if (isset($_SESSION['carrito'])) {
                                 <th>Total</th>
                                 <th>Estado</th>
                                 <th>Método Pago</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -339,7 +340,7 @@ if (isset($_SESSION['carrito'])) {
                                     <td class="fw-bold"><?php echo number_format($ped['total_calculado'], 2, ',', '.'); ?>€</td>
                                     <td>
                                         <?php 
-                                            $clase_badge = 'bg-secondary'; // Gris por defecto
+                                            $clase_badge = 'bg-secondary';
                                             if ($ped['estado'] == 'pendiente') $clase_badge = 'bg-warning text-dark';
                                             if ($ped['estado'] == 'enviado') $clase_badge = 'bg-success';
                                             if ($ped['estado'] == 'cancelado') $clase_badge = 'bg-danger';
@@ -349,6 +350,14 @@ if (isset($_SESSION['carrito'])) {
                                         </span>
                                     </td>
                                     <td class="small text-muted"><?php echo htmlspecialchars($ped['forma_pago']); ?></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-vino btn-detalle" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#modalDetallePedido" 
+                                                data-id="<?php echo $ped['id_pedido']; ?>">
+                                            <i class="bi bi-eye"></i> Ver Detalle
+                                        </button>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -510,6 +519,32 @@ if (isset($_SESSION['carrito'])) {
         </div>
     </div>
 
+    <div class="modal fade" id="modalDetallePedido" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-vino">Detalles del Pedido #<span id="numPedidoModal"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table small">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cant.</th>
+                            <th>Precio</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoDetallePedido">
+                        <!-- Aquí se cargará el contenido vía AJAX -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Miramos si la URL tiene "?pedido_exito=true"
@@ -564,6 +599,25 @@ if (isset($_SESSION['carrito'])) {
         }
     });
 
+    </script>
+    <script> 
+        document.addEventListener("DOMContentLoaded", function() {
+            var modalDetalle = document.getElementById('modalDetallePedido');
+            modalDetalle.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var idPedido = button.getAttribute('data-id');
+                
+                // Ponemos el número en el título
+                document.getElementById('numPedidoModal').textContent = idPedido;
+                
+                // Llamada AJAX sencilla
+                fetch('get_detalle_pedido.php?id=' + idPedido)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('cuerpoDetallePedido').innerHTML = html;
+                    });
+            });
+        });
     </script>
 
 
