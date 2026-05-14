@@ -1,61 +1,357 @@
 /* =========================================
-   ESTILOS PREMIUM PARA CONTACTO
+   1. BASE
    ========================================= */
 
-/* 1. Cabecera con degradado Vino -> Oscuro */
+body {
+    color: #444444;
+    padding-top: 100px;
+    background-color: #fff;
+}
+
+.text-vino {
+    color: #722F37 !important;
+}
+
+.bg-vino {
+    background-color: #722F37 !important;
+}
+
+
+/* =========================================
+   2. BOTONES Y FORMULARIOS COMUNES
+   ========================================= */
+
+.btn-vino {
+    color: #722F37;
+    border: 1px solid #722F37;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-vino:hover {
+    background-color: #722F37;
+    color: #fff;
+    border-color: #722F37;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #722F37;
+    background-color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.15);
+}
+
+
+/* =========================================
+   3. HEADER Y NAVEGACIÓN
+   ========================================= */
+
+.navbar-riverview {
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+}
+
+.buscador-superior {
+    margin-top: 0;
+}
+
+.input-busqueda {
+    border: 2px solid #722F37;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #444;
+    max-width: 500px;
+    box-shadow: none !important;
+}
+
+.input-busqueda:focus {
+    border-color: #722F37;
+    background-color: #fffafa;
+}
+
+.btn-lupa {
+    border: 2px solid #722F37;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #722F37;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-lupa:hover {
+    background-color: #722F37;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.text-vino-carrito {
+    color: #722F37 !important;
+    font-size: 0.9rem;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    text-decoration: none;
+    outline: 0;
+    border-color: #722F37;
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
+}
+
+.icon-nav,
+.icon-nav-user {
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.icon-nav-user {
+    color: #722F37;
+}
+
+.navbar a:hover .icon-nav,
+.navbar a:hover .icon-nav-user {
+    color: #722F37 !important;
+    filter: drop-shadow(0px 3px 2px rgba(114, 47, 55, 0.4));
+    transform: scale(1.15);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: #722F37;
+}
+
+.navbar-nav .nav-link.active {
+    color: #722F37 !important;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   4. OFFCANVAS Y DROPDOWN
+   ========================================= */
+
+#menu-tienda .nav-link {
+    font-size: 0.95rem;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+#menu-tienda .nav-link:hover {
+    color: #722F37;
+    padding-left: 10px;
+    font-weight: 500;
+    background-color: transparent;
+}
+
+#menu-tienda ul {
+    border-left: 2px solid #eee !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #f8e8e8;
+    color: #722F37;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #722F37;
+    color: #fff;
+}
+
+
+/* =========================================
+   5. HERO DE CONTACTO
+   ========================================= */
+
 .hero-contacto {
     background: linear-gradient(135deg, #722F37 0%, #2b1014 100%);
     padding: 80px 0;
-    color: white;
-    /* Si tienes una foto de la bodega, puedes usar esto en su lugar: */
-    /* background: linear-gradient(rgba(114, 47, 55, 0.9), rgba(43, 16, 20, 0.9)), url('../img/bodega-bg.jpg') center/cover; */
+    color: #fff;
 }
 
-/* 2. Iconos interactivos */
+.hero-contacto-texto {
+    max-width: 600px;
+    opacity: 0.9;
+}
+
+
+/* =========================================
+   6. INFORMACIÓN DE CONTACTO
+   ========================================= */
+
 .contacto-icon {
     width: 60px;
     height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fdf2f4; /* Rosa pálido */
-    color: #722F37; /* Rojo Vino */
+    background-color: #fdf2f4;
+    color: #722F37;
     font-size: 1.8rem;
     border-radius: 50%;
-    transition: all 0.3s ease; /* Animación suave */
+    transition: all 0.3s ease;
 }
 
-/* Al pasar el ratón, el icono se invierte y crece un poquito */
 .contacto-info-box:hover .contacto-icon {
     background-color: #722F37;
-    color: white;
+    color: #fff;
     transform: scale(1.1);
     box-shadow: 0 10px 20px rgba(114, 47, 55, 0.2);
 }
 
-/* 3. Tarjeta del formulario más suave */
+
+/* =========================================
+   7. TARJETA Y FORMULARIO
+   ========================================= */
+
 .card-contacto {
     border: none;
     border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
 }
 
-/* 4. Personalización de los inputs (cajas de texto) */
-.form-control, .form-select {
+.card-contacto .form-control,
+.card-contacto .form-select {
     border: 1px solid #eaeaea;
     background-color: #fafafa;
 }
 
-/* Cuando haces clic en la caja de texto */
-.form-control:focus, .form-select:focus {
+.card-contacto .form-control.is-invalid,
+.card-contacto .was-validated .form-control:invalid,
+.card-contacto .form-select.is-invalid,
+.card-contacto .was-validated .form-select:invalid {
     border-color: #722F37;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.15); /* Brillo vino suave */
+    box-shadow: 0 0 0 0.2rem rgba(114, 47, 55, 0.12);
+    background-image: none;
 }
 
-/* Color de la etiqueta flotante al hacer clic */
+.card-contacto .invalid-feedback {
+    color: #722F37;
+    font-size: 0.9rem;
+    margin-top: 0.35rem;
+    padding-left: 0.25rem;
+    font-weight: 500;
+}
+
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-select:focus ~ label {
     color: #722F37;
     font-weight: bold;
+}
+
+.textarea-contacto {
+    height: 150px !important;
+}
+
+
+/* =========================================
+   8. ALERTAS CORPORATIVAS
+   ========================================= */
+
+.alert-riverview {
+    border: 1px solid #722F37;
+    border-left: 5px solid #722F37;
+    border-radius: 12px;
+    background-color: #fcf7f8;
+    color: #4a1e23;
+    box-shadow: 0 8px 20px rgba(114, 47, 55, 0.08);
+}
+
+.alert-riverview-success {
+    background-color: #f8f3f4;
+    color: #722F37;
+    border-color: #722F37;
+}
+
+.alert-riverview-error {
+    background-color: #fff4f4;
+    color: #722F37;
+    border-color: #722F37;
+    border-left-color: #722F37;
+}
+
+.alert-riverview-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    color: #722F37;
+}
+
+
+/* =========================================
+   9. MAPA
+   ========================================= */
+
+.card-mapa {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+}
+
+.mapa-contenedor {
+    width: 100%;
+    min-height: 380px;
+    background-color: #f8f8f8;
+}
+
+.mapa-contenedor iframe {
+    display: block;
+    width: 100%;
+    height: 380px;
+    border: 0;
+}
+
+
+/* =========================================
+   10. FOOTER
+   ========================================= */
+
+.footer-riverview {
+    background-color: rgb(243, 243, 243);
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+    border-top: 1px solid #e0e0e0;
+    color: #5a5a5a;
+    font-weight: 300;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.footer-riverview h5,
+.footer-title {
+    font-weight: 400 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    color: #722F37;
+    margin-bottom: 1.2rem;
+}
+
+.footer-link {
+    text-decoration: none;
+    color: #5a5a5a;
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #722F37 !important;
+    background-color: transparent;
+    padding-left: 5px;
+}
+
+.btn-floating {
+    display: inline-block;
+    font-size: 23px;
+    color: #722F37;
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.btn-floating:hover {
+    transform: scale(1.2);
+}
+
+.rrss {
+    font-size: 23px;
+}
+
+.derechos {
+    margin-bottom: 0;
 }

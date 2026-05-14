@@ -1,21 +1,37 @@
-.btn-vino-admin { 
-    background-color: #640D14; 
-    color: white; 
-    border: none; 
+/* =========================================
+   1. BOTONES
+   ========================================= */
+
+.btn-vino-admin {
+    background-color: #640D14;
+    color: white;
+    border: none;
 }
 
-.btn-vino-admin:hover { 
-    background-color: #4a0a0f; 
-    color: white; 
+.btn-vino-admin:hover {
+    background-color: #4a0a0f;
+    color: white;
 }
 
-.text-vino { color: #640D14; }
+
+/* =========================================
+   2. TEXTOS Y TARJETAS
+   ========================================= */
+
+.text-vino {
+    color: #640D14;
+}
 
 .card-formulario {
     border-radius: 15px;
     border: none;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
 }
+
+
+/* =========================================
+   3. FORMULARIO
+   ========================================= */
 
 .form-label {
     font-size: 0.85rem;
@@ -24,8 +40,31 @@
     margin-bottom: 0.4rem;
 }
 
+.form-control:focus,
+textarea.form-control:focus,
+select.form-control:focus {
+    border-color: #640D14;
+    box-shadow: 0 0 0 0.2rem rgba(100, 13, 20, 0.15);
+}
+
+.bloque-imagen-admin {
+    min-height: 120px;
+}
+
+.preview-admin-img {
+    width: 100px;
+    height: auto;
+    object-fit: cover;
+}
+
+
+/* =========================================
+   4. FOOTER ADMIN
+   ========================================= */
+
 .footer-admin {
     padding: 2rem 0;
     margin-top: 3rem;
     border-top: 1px solid #dee2e6;
+    background-color: #fff;
 }

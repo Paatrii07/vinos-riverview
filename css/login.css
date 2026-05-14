@@ -1,87 +1,82 @@
 /* =========================================
-   1. ESTILOS GENERALES Y FORMULARIOS
+   1. BASE
    ========================================= */
-   
-   /* BUSCAR PRODUCTOS EN NAVEGADOR*/
+
+body {
+    color: #444444;
+    padding-top: 90px;
+    background-color: #fff;
+}
+
+.text-vino {
+    color: #722F37 !important;
+}
+
+
+/* =========================================
+   2. BOTONES Y FORMULARIOS
+   ========================================= */
 
 .btn-vino {
-    color: #722F37;              /* Color del texto y borde */
-    border-color: #722F37;       /* Color del borde */
+    color: #722F37;
+    border-color: #722F37;
     background-color: transparent;
     transition: all 0.3s ease;
 }
 
 .btn-vino:hover {
-    background-color: #722F37;   /* Al pasar el ratón, se rellena de vino */
-    color: white;                /* El texto se vuelve blanco */
+    background-color: #722F37;
+    color: white;
     border-color: #722F37;
 }
 
-/* Quitar el brillo azul de Bootstrap y ponerlo color Vino */
 .form-control:focus {
-    border-color: #722F37; /* Cambia el borde sólido a vino */
-    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25); /* El brillo suave */
+    border-color: #722F37;
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
 }
 
-/* Buscador desplegable superior (ajuste específico) */
 .buscador-superior input.form-control {
-    box-shadow: none; /* Quitamos sombra extra en la barra superior */
-}
-
-nav{
-    box-shadow: 0 0vh 1.1vh #722F37 !important;
+    box-shadow: none;
 }
 
 
 /* =========================================
-    2. CABECERA Y NAVEGACIÓN (HEADER)
+   3. HEADER Y NAVEGACIÓN
    ========================================= */
 
-
-/* BARRA DE BÚSQUEDA */
-
-/* 1. La caja de texto (Input) */
-.input-busqueda {
-    border: 2px solid #722F37;     /* Borde color vino un poco más grueso */
-    border-radius: 8px;            /* Bordes redondeados */
-    padding: 10px 15px;            /* Espacio interior cómodo */
-    color: #444;
-    max-width: 500px;              /* Que no sea infinita en pantallas grandes */
-    box-shadow: none !important;   /* Quitamos sombras extrañas */
-}
-
-/* Efecto al escribir en la caja */
-.input-busqueda:focus {
-    border-color: #722F37;         /* Mantiene el color vino */
-    background-color: #fffafa;     /* Un fondo rosado casi imperceptible */
-}
-
-/* 2. El botón cuadrado con la lupa */
-.btn-lupa {
-    border: 2px solid #722F37;     /* Borde color vino igual que el input */
-    border-radius: 8px;            /* Bordes redondeados iguales */
-    background-color: white;       /* Fondo blanco */
-    color: #722F37;                /* Icono color vino */
-    padding: 10px 15px;            /* Tamaño cuadrado */
-    transition: all 0.3s ease;
-}
-
-/* Efecto al pasar el ratón por la lupa */
-.btn-lupa:hover {
-    background-color: #722F37;     /* Se rellena de vino */
-    color: white;                  /* La lupa se vuelve blanca */
-    transform: translateY(-2px);   /* Pequeño saltito hacia arriba */
-}
-
-/* Línea sombreada separadora */
-nav {
+.navbar-riverview {
     box-shadow: 0 0vh 1.1vh #722F37 !important;
 }
 
+.input-busqueda {
+    border: 2px solid #722F37;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #444;
+    max-width: 500px;
+    box-shadow: none !important;
+}
 
+.input-busqueda:focus {
+    border-color: #722F37;
+    background-color: #fffafa;
+}
 
-/* --- PERSONALIZAR EL BOTÓN HAMBURGUESA --- */
-/* Cuando lo pulsas (Focus) o está abierto */
+.btn-lupa {
+    border: 2px solid #722F37;
+    border-radius: 8px;
+    background-color: white;
+    color: #722F37;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-lupa:hover {
+    background-color: #722F37;
+    color: white;
+    transform: translateY(-2px);
+}
+
 .navbar-toggler:focus,
 .navbar-toggler:active {
     text-decoration: none;
@@ -89,208 +84,176 @@ nav {
     border-color: #722F37;
     box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
 }
-/* --- ICONOS DE LA CABECERA (NUEVO: Clases para tamaño y usuario) --- */
+
 .icon-nav {
-    font-size: 1.5rem; /* Tamaño unificado para lupa, carrito y usuario */
+    font-size: 1.5rem;
     transition: all 0.3s ease;
 }
 
 .icon-nav-user {
     font-size: 1.5rem;
-    color: #722F37; /* El icono de usuario logueado siempre en vino */
+    color: #722F37;
     transition: all 0.3s ease;
 }
 
-/* Efectos Hover en los iconos */
 .navbar a:hover .icon-nav,
 .navbar a:hover .icon-nav-user {
     color: #722F37 !important;
     filter: drop-shadow(0px 3px 2px rgba(114, 47, 55, 0.4));
-    transform: scale(1.15); 
+    transform: scale(1.15);
 }
 
-/* --- ENLACES DEL MENÚ PRINCIPAL --- */
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link:focus {
-    color: #722F37;           
+    color: #722F37;
 }
 
 .navbar-nav .nav-link.active {
-    color: #722F37 !important; 
-    font-weight: bold;        
+    color: #722F37 !important;
+    font-weight: bold;
 }
 
-/* =========================================
-   3. MENÚ LATERAL (OFFCANVAS - TIENDA)
-   ========================================= */
-
-#menu-tienda .nav-link {
-    font-size: 0.95rem;     /* Un poco más pequeño que las categorías principales */
-    color: #666;            /* Gris suave para diferenciarlo */
-    transition: all 0.2s ease;
-}
-
-#menu-tienda .nav-link:hover {
-    color: #722F37;         /* Color Vino */
-    padding-left: 10px;     /* Efecto de desplazamiento a la derecha */
-    font-weight: 500;
-    background-color: transparent; /* Evitamos fondos no deseados */
-}
-
-/* Línea vertical gris del submenú para dar estructura de árbol */
-#menu-tienda ul {
-    border-left: 2px solid #eee !important;
-}
-
-/* =========================================
-   4. DROPDOWN DE USUARIO (SOLO PARA LOGIN)
-   ========================================= */
-.dropdown-item:hover,
-.dropdown-item:focus {
-    background-color: #f8e8e8; 
-    color: #722F37;            
-}
-
-.dropdown-item.active,
-.dropdown-item:active {
-    background-color: #722F37; 
-    color: white;              
-}
-
-/* --- ICONOS DE LA CABECERA (Login, Carrito y Buscar) --- */
-
-/* 1. Estado normal (transición suave) */
-.navbar .bi-search,
-.navbar .bi-person,
-.navbar .bi-cart {
-    transition: all 0.3s ease; /* Para que el cambio no sea brusco */
-}
-
-/* 2. Cuando pasas el ratón por encima */
-/* Nota: Apuntamos al enlace <a> para que el efecto salte aunque no toques el icono pixel a pixel */
-.navbar a:hover .bi-search,
-.navbar a:hover .bi-person,
-.navbar a:hover .bi-cart {
-    color: #722F37 !important; /* Cambia de negro a color Vino */
-    
-    /* Efecto de sombreado suave */
-    filter: drop-shadow(0px 3px 2px rgba(114, 47, 55, 0.4));
-    
-    /* Opcional: Un pequeño "zoom" para que destaque */
-    transform: scale(1.15); 
-}
-
-/* Numerito del carrito de la compra */
 .text-vino-carrito {
     color: #722F37 !important;
     font-size: 0.9rem;
 }
 
 
-/* --- ESTILOS DEL MENÚ NAVEGACIÓN --- */
+/* =========================================
+   4. OFFCANVAS Y DROPDOWN
+   ========================================= */
 
-
-/* 1. Enlaces del menú principal (Inicio, Tienda, Contacto...) */
-.navbar-nav .nav-link:hover,
-.navbar-nav .nav-link:focus {
-    color: #722F37;           /* Color vino al pasar el ratón */
+#menu-tienda .nav-link {
+    font-size: 0.95rem;
+    color: #666;
+    transition: all 0.2s ease;
 }
 
-/* 2. Enlace de la página actual (la que tiene la clase "active") */
-.navbar-nav .nav-link.active {
-    color: #722F37 !important; /* Forzamos el color vino */
-    font-weight: bold;         /* Lo ponemos en negrita para destacar */
+#menu-tienda .nav-link:hover {
+    color: #722F37;
+    padding-left: 10px;
+    font-weight: 500;
+    background-color: transparent;
 }
 
-/* --- ESTILOS DEL DESPLEGABLE (DROPDOWN) --- */
+#menu-tienda ul {
+    border-left: 2px solid #eee !important;
+}
 
-
-/* 3. Cuando pasas el ratón por las opciones del desplegable (Vinos, Quesos...) */
 .dropdown-item:hover,
 .dropdown-item:focus {
-    background-color: #f8e8e8; /* Un fondo rosado muy suave */
-    color: #722F37;            /* Texto color vino */
+    background-color: #f8e8e8;
+    color: #722F37;
 }
 
-/* 4. Cuando haces clic en una opción del desplegable */
 .dropdown-item.active,
 .dropdown-item:active {
-    background-color: #722F37; /* Fondo color vino fuerte */
-    color: white;              /* Texto blanco */
+    background-color: #722F37;
+    color: white;
 }
-
-/* Empujamos el contenido para que no se esconda bajo el menú fijo */
-body {
-    color: #444444;
-    padding-top: 90px; /* Ajusta este número según la altura de tu logo */
-}
-
-.text-vino {
-    color: #722F37 !important; /* Color vino forzado */
-    transition: color 0.3s ease;
-}
-
-.text-vino:hover {
-    color: #4a1e23 !important; /* Un tono más oscuro al pasar el ratón */
-    text-decoration: underline !important; /* Subrayado elegante al pasar el ratón */
-}
-
-
-
-
-
 
 
 /* =========================================
-   7. FOOTER
+   5. LOGIN
+   ========================================= */
+
+.login-main {
+    padding: 1.25rem 0 3.5rem;
+}
+
+.card-login {
+    border: 0;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+    border-radius: 1rem;
+}
+
+.btn-login-submit {
+    letter-spacing: 2px;
+}
+
+.enlace-registro-login {
+    color: #722F37;
+}
+
+.enlace-registro-login:hover {
+    color: #4a1e23;
+    text-decoration: underline !important;
+}
+
+/* Validación corporativa */
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+    border-color: #722F37;
+    box-shadow: 0 0 0 0.20rem rgba(114, 47, 55, 0.15);
+    background-image: none;
+}
+
+.was-validated .form-control:invalid:focus,
+.form-control.is-invalid:focus {
+    border-color: #722F37;
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
+}
+
+.invalid-feedback {
+    color: #722F37;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-top: 0.35rem;
+}
+
+
+/* =========================================
+   6. FOOTER
    ========================================= */
 
 .footer-riverview {
     background-color: rgb(243, 243, 243);
-    box-shadow: 0 0vh 1.1vh #722F37 !important; 
-    border-top: 1px solid #e0e0e0;  
-    color: #5a5a5a;                 
-    font-weight: 300;               
-    font-size: 0.9rem;             
-    letter-spacing: 0.5px;          
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+    border-top: 1px solid #e0e0e0;
+    color: #5a5a5a;
+    font-weight: 300;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
 }
 
-.footer-riverview h5 {
-    font-weight: 400 !important;   
-    letter-spacing: 1px;           
-    text-transform: uppercase;     
+.footer-riverview h5,
+.footer-title {
+    font-weight: 400 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     font-size: 0.95rem;
-    color: #722F37;                
+    color: #722F37;
     margin-bottom: 1.2rem;
 }
 
 .footer-link {
-    text-decoration: none;         
-    color: #5a5a5a;                
+    text-decoration: none;
+    color: #5a5a5a;
     transition: all 0.3s ease;
 }
 
 .footer-link:hover {
-    color: #722F37 !important;     
-    background-color: transparent; 
-    padding-left: 5px;             
+    color: #722F37 !important;
+    background-color: transparent;
+    padding-left: 5px;
 }
 
-/* Iconos redes sociales */
 .btn-floating {
     font-size: 23px;
-    color: #722F37; /* Color inicial vino */
+    color: #722F37;
     text-decoration: none;
     transition: transform 0.3s ease, color 0.3s ease;
-    display: inline-block; /* Para que el transform funcione bien */
+    display: inline-block;
 }
 
 .btn-floating:hover {
-    transform: scale(1.2); /* Efecto zoom */
+    transform: scale(1.2);
 }
 
-.rrss{
-font-size: 23px;
+.rrss {
+    font-size: 23px;
 }
 
-
+.derechos {
+    margin-bottom: 0;
+}

@@ -1,42 +1,139 @@
-/*Cabecera header */
+/* =========================================
+   1. BASE
+   ========================================= */
 
-        .bg-vino-admin { background-color: #640D14; color: white; }
-        .card-stats { border: none; border-radius: 10px }
-        .nav-tabs .nav-link.active { color: #640D14; font-weight: bold; border-bottom: 3px solid #640D14; }
-        .nav-tabs .nav-link { color: #6c757d; }
+body {
+    padding-bottom: 0 !important;
+}
+
+.bg-vino-admin {
+    background-color: #640D14;
+    color: white;
+}
+
+.text-vino-panel,
+.text-vino-admin {
+    color: #640D14 !important;
+}
+
+.border-riverview-vino {
+    border-color: #640D14 !important;
+}
+
+.border-riverview-suave {
+    border-color: rgba(100, 13, 20, 0.35) !important;
+}
 
 
-/* Transición suave para las tarjetas de estadísticas */
+/* =========================================
+   2. CABECERA
+   ========================================= */
+
+.admin-brand {
+    letter-spacing: 2px;
+}
+
+
+/* =========================================
+   3. TARJETAS DE ESTADÍSTICAS
+   ========================================= */
+
 .card-stats {
+    border: none;
+    border-radius: 10px;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: pointer;
     position: relative;
     overflow: hidden;
 }
 
-/* Efecto al pasar el ratón (Hover) */
 .card-stats:hover {
-    transform: translateY(-8px); /* La tarjeta sube un poco */
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important; /* Sombra más profunda */
-    border-color: rgba(100, 13, 20, 0.3); /* El borde se tiñe sutilmente de color vino */
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+    border-color: rgba(100, 13, 20, 0.3);
 }
 
-/* Opcional: un efecto de pulsación cuando haces clic */
 .card-stats:active {
     transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1) !important;
 }
-        
+
+.panel-clickable {
+    cursor: pointer;
+}
+
+
+/* =========================================
+   4. PESTAÑAS Y TABLAS
+   ========================================= */
+
+.nav-tabs .nav-link {
+    color: #6c757d;
+}
+
+.nav-tabs .nav-link.active {
+    color: #640D14;
+    font-weight: bold;
+    border-bottom: 3px solid #640D14;
+}
+
+.select-estado-admin {
+    width: auto;
+}
+
+.badge-admin-test {
+    font-size: 0.6rem;
+}
+
+.badge-codigo-reserva {
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+
+/* =========================================
+   5. MODALES
+   ========================================= */
+
+.modal-header-admin {
+    background-color: #640D14;
+    color: white;
+}
+
+.modal-redondeado-admin {
+    border-radius: 15px;
+}
+
+.btn-admin-logout {
+    background-color: #640D14;
+    border: none;
+    color: #fff;
+}
+
+.btn-admin-logout:hover {
+    background-color: #4e0910;
+    color: #fff;
+}
+
+.icono-alerta-borrado {
+    width: 80px;
+    height: 80px;
+}
+
+.icono-alerta-borrado-i {
+    font-size: 2.5rem;
+}
+
+
+/* =========================================
+   6. FOOTER ADMIN
+   ========================================= */
+
 .footer-admin {
     background-color: #fff;
     border-top: 1px solid #dee2e6;
     color: #6c757d;
-    padding: 25px 0; /* Espacio interno elegante */
-    margin-top: auto; /* Esto lo empuja al fondo si hay poco contenido */
-    margin-bottom: 5px !important; /* Un margen pequeño y controlado */
-}
-
-/* Elimina cualquier padding-bottom que le hayas puesto al body anteriormente */
-body {
-    padding-bottom: 0 !important;
+    padding: 25px 0;
+    margin-top: auto;
+    margin-bottom: 5px !important;
 }

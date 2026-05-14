@@ -1,60 +1,34 @@
+/* =========================================
+   1. BASE
+   ========================================= */
 
-/* Empujamos el contenido para que no se esconda bajo el menú fijo */
 body {
-    
     color: #444444;
-    padding-top: 100px; /* Ajustado ligeramente para dar aire al header */
+    padding-top: 100px;
     background-color: #fff;
 }
 
+.text-vino {
+    color: #722F37 !important;
+}
+
+.bg-vino {
+    background-color: #722F37 !important;
+}
+
+
 /* =========================================
-    2. CABECERA Y NAVEGACIÓN (HEADER)
+   2. HEADER Y NAVEGACIÓN
    ========================================= */
 
-
-/* BARRA DE BÚSQUEDA */
-
-/* 1. La caja de texto (Input) */
-.input-busqueda {
-    border: 2px solid #722F37;     /* Borde color vino un poco más grueso */
-    border-radius: 8px;            /* Bordes redondeados */
-    padding: 10px 15px;            /* Espacio interior cómodo */
-    color: #444;
-    max-width: 500px;              /* Que no sea infinita en pantallas grandes */
-    box-shadow: none !important;   /* Quitamos sombras extrañas */
-}
-
-/* Efecto al escribir en la caja */
-.input-busqueda:focus {
-    border-color: #722F37;         /* Mantiene el color vino */
-    background-color: #fffafa;     /* Un fondo rosado casi imperceptible */
-}
-
-/* 2. El botón cuadrado con la lupa */
-.btn-lupa {
-    border: 2px solid #722F37;     /* Borde color vino igual que el input */
-    border-radius: 8px;            /* Bordes redondeados iguales */
-    background-color: white;       /* Fondo blanco */
-    color: #722F37;                /* Icono color vino */
-    padding: 10px 15px;            /* Tamaño cuadrado */
-    transition: all 0.3s ease;
-}
-
-/* Efecto al pasar el ratón por la lupa */
-.btn-lupa:hover {
-    background-color: #722F37;     /* Se rellena de vino */
-    color: white;                  /* La lupa se vuelve blanca */
-    transform: translateY(-2px);   /* Pequeño saltito hacia arriba */
-}
-
-/* Línea sombreada separadora */
-nav {
+.navbar-riverview {
     box-shadow: 0 0vh 1.1vh #722F37 !important;
 }
 
+.buscador-superior {
+    margin-top: 0;
+}
 
-
-/* --- BOTÓN HAMBURGUESA --- */
 .navbar-toggler:focus,
 .navbar-toggler:active {
     text-decoration: none;
@@ -63,120 +37,229 @@ nav {
     box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
 }
 
-/* --- ICONOS DE LA CABECERA (NUEVO: Clases para tamaño y usuario) --- */
-.icon-nav {
-    font-size: 1.5rem; /* Tamaño unificado para lupa, carrito y usuario */
+.icon-nav,
+.icon-nav-user {
+    font-size: 1.5rem;
     transition: all 0.3s ease;
 }
 
 .icon-nav-user {
-    font-size: 1.5rem;
-    color: #722F37; /* El icono de usuario logueado siempre en vino */
-    transition: all 0.3s ease;
+    color: #722F37;
 }
 
-/* Efectos Hover en los iconos */
 .navbar a:hover .icon-nav,
 .navbar a:hover .icon-nav-user {
     color: #722F37 !important;
     filter: drop-shadow(0px 3px 2px rgba(114, 47, 55, 0.4));
-    transform: scale(1.15); 
+    transform: scale(1.15);
 }
 
-/* --- ENLACES DEL MENÚ PRINCIPAL --- */
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link:focus {
-    color: #722F37;           
+    color: #722F37;
 }
 
 .navbar-nav .nav-link.active {
-    color: #722F37 !important; 
-    font-weight: bold;        
+    color: #722F37 !important;
+    font-weight: bold;
 }
 
-
-/* Numerito del carrito de la compra */
 .text-vino-carrito {
     color: #722F37 !important;
     font-size: 0.9rem;
 }
 
 
-
 /* =========================================
-   4. DROPDOWN DE USUARIO (SOLO PARA LOGIN)
+   3. BUSCADOR Y DROPDOWN
    ========================================= */
+
+.input-busqueda {
+    border: 2px solid #722F37;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #444;
+    max-width: 500px;
+    box-shadow: none !important;
+}
+
+.input-busqueda:focus {
+    border-color: #722F37;
+    background-color: #fffafa;
+}
+
+.btn-lupa {
+    border: 2px solid #722F37;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #722F37;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-lupa:hover {
+    background-color: #722F37;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
 .dropdown-item:hover,
 .dropdown-item:focus {
-    background-color: #f8e8e8; 
-    color: #722F37;            
+    background-color: #f8e8e8;
+    color: #722F37;
 }
 
 .dropdown-item.active,
 .dropdown-item:active {
-    background-color: #722F37; 
-    color: white;              
+    background-color: #722F37;
+    color: #fff;
 }
 
-/* borde de las cards */
+#menu-tienda .nav-link {
+    font-size: 0.95rem;
+    color: #666;
+    transition: all 0.2s ease;
+}
 
-.card{
+#menu-tienda .nav-link:hover {
+    color: #722F37;
+    padding-left: 10px;
+    font-weight: 500;
+    background-color: transparent;
+}
+
+#menu-tienda ul {
+    border-left: 2px solid #eee !important;
+}
+
+
+/* =========================================
+   4. EXPERIENCIAS
+   ========================================= */
+
+.experiencias-main {
+    margin-top: 1rem;
+}
+
+.separador-vino {
+    width: 50px;
+    border-top: 2px solid #722F37;
+    opacity: 1;
+}
+
+.card-experiencia {
     border-color: #722F37;
 }
 
 
+/* =========================================
+   5. BOTONES Y FORMULARIO
+   ========================================= */
+
+.btn-vino {
+    background-color: #722F37;
+    color: #fff;
+    border: 1px solid #722F37;
+    transition: all 0.3s ease;
+}
+
+.btn-vino:hover {
+    background-color: #5a232b;
+    color: #fff;
+    border-color: #5a232b;
+}
+
+.btn-outline-vino {
+    background-color: #fff;
+    color: #722F37;
+    border: 1px solid #722F37;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-vino:hover {
+    background-color: #722F37;
+    color: #fff;
+}
+
+.focus-vino:focus {
+    border-color: #722F37;
+    box-shadow: 0 0 0 0.25rem rgba(114, 47, 55, 0.25);
+}
 
 
+/* =========================================
+   6. MODALES
+   ========================================= */
+
+.modal-reserva {
+    border-radius: 15px;
+}
+
+.modal-titulo-reserva {
+    letter-spacing: 2px;
+}
+
+.modal-nombre-cata {
+    font-size: 1.5rem;
+}
+
+.btn-confirmar-reserva {
+    letter-spacing: 1px;
+}
+
+.border-bottom-vino {
+    border-bottom: 1px solid rgba(114, 47, 55, 0.2);
+}
+
+.icono-exito-reserva {
+    font-size: 4rem;
+}
 
 
-
-/* FOOTER  */
+/* =========================================
+   7. FOOTER
+   ========================================= */
 
 .footer-riverview {
     background-color: rgb(243, 243, 243);
-    box-shadow: 0 0vh 1.1vh #722F37 !important; 
-    border-top: 1px solid #e0e0e0;  
-    color: #5a5a5a;                 
-    font-weight: 300;               
-    font-size: 0.9rem;             
-    letter-spacing: 0.5px;          
+    box-shadow: 0 0vh 1.1vh #722F37 !important;
+    border-top: 1px solid #e0e0e0;
+    color: #5a5a5a;
+    font-weight: 300;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
 }
 
-.footer-riverview h5 {
-    font-weight: 400 !important;   
-    letter-spacing: 1px;           
-    text-transform: uppercase;     
+.footer-riverview h5,
+.footer-title {
+    font-weight: 400 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     font-size: 0.95rem;
-    color: #722F37;                
+    color: #722F37;
     margin-bottom: 1.2rem;
 }
 
 .footer-link {
-    text-decoration: none;         
-    color: #5a5a5a;                
+    text-decoration: none;
+    color: #5a5a5a;
     transition: all 0.3s ease;
 }
 
 .footer-link:hover {
-    color: #722F37 !important;     
-    background-color: transparent; 
-    padding-left: 5px;             
+    color: #722F37 !important;
+    background-color: transparent;
+    padding-left: 5px;
 }
 
-/* Iconos redes sociales */
 .btn-floating {
+    display: inline-block;
     font-size: 23px;
-    color: #722F37; /* Color inicial vino */
+    color: #722F37;
     text-decoration: none;
     transition: transform 0.3s ease, color 0.3s ease;
-    display: inline-block; /* Para que el transform funcione bien */
 }
 
 .btn-floating:hover {
-    transform: scale(1.2); /* Efecto zoom */
+    transform: scale(1.2);
 }
-
-
-
-
-
